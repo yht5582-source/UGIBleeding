@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>UGIB 上消化道出血風險分級計算機</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <!-- PWA Manifest -->
+  <script>
+    const manifestJSON = {
+      name: "UGIB 風險分級",
+      short_name: "UGIB 計算機",
+      description: "基於 ACG 指引的 GBS 與 Rockall 上消化道出血評估",
+      start_url: "./",
+      display: "standalone",
+      background_color: "#fdf2f8",
+      theme_color: "#be123c",
+      icons: [{
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23be123c'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E",
+        sizes: "192x192",
+        type: "image/svg+xml"
+      }]
+    };
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = URL.createObjectURL(new Blob([JSON.stringify(manifestJSON)], { type: 'application/json' }));
+    document.head.appendChild(link);
+  </script>
+</head>
+<body class="bg-rose-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+  <div id="app" class="max-w-5xl mx-auto px-4 py-6 md:py-10">
+    
+    <header class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-rose-800 mb-2">急性上消化道出血 (UGIB) 風險計算機</h1>
+      <p class="text-sm text-slate-500">同步計算 Glasgow-Blatchford Score (GBS) 與 臨床 Rockall Score</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- 左側：統一表單輸入區 -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <div class="bg-white shadow-md rounded-xl overflow-hidden border border-slate-200">
+          <div class="bg-rose-700 px-5 py-3">
+            <h2 class="text-white font-semibold">1. 基本資料與生命徵象 (Vitals)</h2>
+          </div>
+          <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">年齡 (歲)</label>
+              <input type="number" v-model.number="pt.age" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">性別</label>
+              <div class="flex gap-2">
+                <button @click="pt.gender = 'M'" :class="pt.gender === 'M' ? 'bg-rose-100 border-rose-500 text-rose-800 font-bold' : 'hover:bg-slate-50'" class="flex-1 p-2 border rounded transition-colors text-sm">男性</button>
+                <button @click="pt.gender = 'F'" :class="pt.gender === 'F' ? 'bg-rose-100 border-rose-500 text-rose-800 font-bold' : 'hover:bg-slate-50'" class="flex-1 p-2 border rounded transition-colors text-sm">女性</button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">收縮壓 SBP (mmHg)</label>
+              <input type="number" v-model.number="pt.sbp" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">心跳 Pulse (bpm)</label>
+              <input type="number" v-model.number="pt.hr" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white shadow-md rounded-xl overflow-hidden border border-slate-200">
+          <div class="bg-rose-700 px-5 py-3">
+            <h2 class="text-white font-semibold">2. 實驗室數據 (Labs)</h2>
+          </div>
+          <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">血紅素 Hemoglobin (g/dL)</label>
+              <input type="number" v-model.number="pt.hb" step="0.1" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-2">血清尿素氮 BUN (mg/dL)</label>
+              <input type="number" v-model.number="pt.bun" step="0.1" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white shadow-md rounded-xl overflow-hidden border border-slate-200">
+          <div class="bg-rose-700 px-5 py-3">
+            <h2 class="text-white font-semibold">3. 臨床表現與共病史 (History & Comorbidities)</h2>
+          </div>
+          <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.melena}">
+              <input type="checkbox" v-model="pt.melena" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
+              <span class="font-medium text-slate-700">解黑便 (Melena)</span>
+            </label>
+            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.syncope}">
+              <input type="checkbox" v-model="pt.syncope" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
+              <span class="font-medium text-slate-700">暈厥史 (Syncope)</span>
+            </label>
+            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.hepatic}">
+              <input type="checkbox" v-model="pt.hepatic" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
+              <span class="font-medium text-slate-700">肝臟疾病 (Hepatic disease)</span>
+            </label>
+            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.heart}">
+              <input type="checkbox" v-model="pt.heart" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
+              <span class="font-medium text-slate-700">心臟衰竭 (Heart failure)</span>
+            </label>
+            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.ihd}">
+              <input type="checkbox" v-model="pt.ihd" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
+              <span class="font-medium text-slate-700">缺血性心臟病 (IHD)</span>
+            </label>
+            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.renalMalignancy}">
+              <input type="checkbox" v-model="pt.renalMalignancy" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
+              <span class="font-medium text-slate-700">腎衰竭 / 擴散性惡性腫瘤</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 右側：結果輸出區 -->
+      <div class="lg:col-span-1 space-y-6">
+        
+        <!-- GBS 結果 -->
+        <div class="sticky top-6 bg-white rounded-2xl shadow-xl overflow-hidden border-t-8 transition-colors duration-300" :class="gbsResult.colorClass">
+          <div class="px-5 py-4 border-b text-center">
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Glasgow-Blatchford Score</h3>
+            <div class="text-5xl font-extrabold mb-1" :class="gbsResult.textColor">{{ gbsScore }}</div>
+            <div class="text-lg font-bold" :class="gbsResult.textColor">{{ gbsResult.riskLevel }}</div>
+          </div>
+          <div class="p-5 bg-slate-50">
+            <div class="text-xs text-slate-500 font-bold uppercase mb-2">臨床處置建議 (ACG 指引)</div>
+            <div class="font-bold text-slate-800 bg-white p-3 border rounded shadow-sm">
+              {{ gbsResult.recommendation }}
+            </div>
+            <p class="text-sm text-slate-600 mt-3 leading-relaxed">
+              {{ gbsResult.detail }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Pre-endoscopic Rockall 結果 -->
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-slate-200">
+          <div class="bg-slate-700 px-5 py-2 flex justify-between items-center">
+            <h3 class="text-white text-sm font-semibold">Pre-endoscopic Rockall</h3>
+            <span class="bg-slate-900 text-white text-xs px-2 py-1 rounded font-bold">{{ rockallScore }} 分</span>
+          </div>
+          <div class="p-4 text-sm text-slate-600">
+            此分數反映內視鏡檢查前的死亡與再出血風險。
+            <span v-if="rockallScore === 0" class="text-emerald-600 font-bold">目前為 0 分，死亡/再出血風險極低。</span>
+            <span v-else class="text-amber-600 font-bold">分數大於 0，具備潛在不良預後風險，應謹慎評估。</span>
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, computed } = Vue;
+
+    createApp({
+      setup() {
+        const pt = ref({
+          age: 60,
+          gender: 'M',
+          sbp: 120,
+          hr: 80,
+          hb: 14.0,
+          bun: 15.0,
+          melena: false,
+          syncope: false,
+          hepatic: false,
+          heart: false,
+          ihd: false,
+          renalMalignancy: false
+        });
+
+        // 計算 GBS
+        const gbsScore = computed(() => {
+          let score = 0;
+          
+          // BUN (mg/dL)
+          const bun = pt.value.bun;
+          if (bun >= 70.0) score += 6;
+          else if (bun >= 28.0) score += 4;
+          else if (bun >= 22.4) score += 3;
+          else if (bun >= 18.2) score += 2;
+
+          // Hb (g/dL)
+          const hb = pt.value.hb;
+          if (pt.value.gender === 'M') {
+            if (hb < 10.0) score += 6;
+            else if (hb < 12.0) score += 3;
+            else if (hb < 13.0) score += 1;
+          } else {
+            if (hb < 10.0) score += 6;
+            else if (hb < 12.0) score += 1;
+          }
+
+          // SBP (mmHg)
+          const sbp = pt.value.sbp;
+          if (sbp < 90) score += 3;
+          else if (sbp < 100) score += 2;
+          else if (sbp < 110) score += 1;
+
+          // Pulse
+          if (pt.value.hr >= 100) score += 1;
+
+          // History / Comorbidities
+          if (pt.value.melena) score += 1;
+          if (pt.value.syncope) score += 2;
+          if (pt.value.hepatic) score += 2;
+          if (pt.value.heart) score += 2;
+
+          return score;
+        });
+
+        // 判斷 GBS 處置建議
+        const gbsResult = computed(() => {
+          const score = gbsScore.value;
+          if (score <= 1) {
+            return {
+              riskLevel: '極低風險 (Very Low Risk)',
+              colorClass: 'border-emerald-500',
+              textColor: 'text-emerald-600',
+              recommendation: '可考慮門診處置與追蹤',
+              detail: '根據 ACG 2021 指引，GBS ≤ 1 的患者再出血或死亡風險極低，不需緊急輸血。建議可安排門診胃鏡，無須急診留觀或住院。'
+            };
+          } else if (score <= 6) {
+            return {
+              riskLevel: '中低風險 (Low-Moderate Risk)',
+              colorClass: 'border-amber-500',
+              textColor: 'text-amber-600',
+              recommendation: '建議住院觀察及內視鏡檢查',
+              detail: '患者具備潛在惡化風險，需安排住院並於 24 小時內進行早期內視鏡檢查 (Early Endoscopy)，並視情況給予輸液或 PPI 治療。'
+            };
+          } else {
+            return {
+              riskLevel: '高風險 (High Risk)',
+              colorClass: 'border-rose-600',
+              textColor: 'text-rose-600',
+              recommendation: '強烈建議住院 (可能需 ICU) 及緊急處置',
+              detail: '患者為內視鏡介入 (Endoscopic intervention) 或輸血的高危險群。應立即建立靜脈輸液途徑、備血，並在血流動力學穩定後盡速執行內視鏡止血。'
+            };
+          }
+        });
+
+        // 計算 Pre-endoscopic Rockall Score
+        const rockallScore = computed(() => {
+          let score = 0;
+          
+          // Age
+          if (pt.value.age >= 80) score += 2;
+          else if (pt.value.age >= 60) score += 1;
+
+          // Shock
+          if (pt.value.sbp < 100) score += 2;
+          else if (pt.value.hr >= 100) score += 1; // SBP>=100 is implied
+
+          // Comorbidities
+          if (pt.value.hepatic || pt.value.renalMalignancy) {
+            score += 3;
+          } else if (pt.value.heart || pt.value.ihd) {
+            score += 2;
+          }
+
+          return score;
+        });
+
+        return { pt, gbsScore, gbsResult, rockallScore };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
