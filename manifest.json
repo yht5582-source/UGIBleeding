@@ -1,0 +1,12 @@
+{
+  "name": "UGIB 上消化道出血風險分級",
+  "short_name": "UGIB 分級",
+  "description": "GBS 與 Pre-endoscopic Rockall，對應 ACG 2021 指引",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff1f2",
+  "theme_color": "#be123c",
+  "lang": "zh-TW",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

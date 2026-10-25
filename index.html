@@ -1,278 +1,528 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>UGIB 上消化道出血風險分級計算機</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-
-  <!-- PWA Manifest -->
-  <script>
-    const manifestJSON = {
-      name: "UGIB 風險分級",
-      short_name: "UGIB 計算機",
-      description: "基於 ACG 指引的 GBS 與 Rockall 上消化道出血評估",
-      start_url: "./",
-      display: "standalone",
-      background_color: "#fdf2f8",
-      theme_color: "#be123c",
-      icons: [{
-        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23be123c'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E",
-        sizes: "192x192",
-        type: "image/svg+xml"
-      }]
-    };
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = URL.createObjectURL(new Blob([JSON.stringify(manifestJSON)], { type: 'application/json' }));
-    document.head.appendChild(link);
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UGIB 上消化道出血風險分級</title>
+<meta name="description" content="Glasgow-Blatchford Score 與 Pre-endoscopic Rockall Score，對應 ACG 2021 上消化道及潰瘍出血指引">
+<meta name="theme-color" content="#be123c">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+:root{
+  --rose-50:#fff1f2;--rose-100:#ffe4e6;--rose-200:#fecdd3;--rose-300:#fda4af;--rose-500:#f43f5e;--rose-600:#e11d48;--rose-700:#be123c;--rose-800:#9f1239;
+  --slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;--slate-300:#cbd5e1;--slate-500:#64748b;--slate-600:#475569;--slate-700:#334155;--slate-800:#1e293b;--slate-900:#0f172a;
+  --emerald-50:#ecfdf5;--emerald-500:#10b981;--emerald-700:#047857;
+  --amber-50:#fffbeb;--amber-500:#f59e0b;--amber-700:#b45309;
+  --sky-50:#f0f9ff;--sky-700:#0369a1;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--rose-50);color:var(--slate-800);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px}
+header{text-align:center;margin-bottom:24px}
+h1{font-size:1.75rem;color:var(--rose-800);margin:0 0 6px}
+header p{margin:0;color:var(--slate-500);font-size:.9rem}
+.grid{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:960px){.grid{grid-template-columns:2fr 1fr}.side{position:sticky;top:16px;align-self:start;max-height:calc(100vh - 32px);overflow:auto}}
+.card{background:#fff;border:1px solid var(--slate-200);border-radius:14px;box-shadow:0 2px 6px rgba(15,23,42,.06);overflow:hidden;margin-bottom:20px}
+.card>h2{margin:0;background:var(--rose-700);color:#fff;font-size:1rem;font-weight:600;padding:10px 18px}
+.card>h2 small{font-weight:400;opacity:.85;margin-left:6px}
+.body{padding:18px}
+.fields{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:640px){.fields{grid-template-columns:1fr 1fr}}
+label.f{display:block;font-size:.9rem;font-weight:700;color:var(--slate-700);margin-bottom:6px}
+input[type=number]{width:100%;padding:9px 10px;font-size:1rem;border:1px solid var(--slate-300);border-radius:8px;background:#fff;color:inherit}
+input[type=number]:focus{outline:none;border-color:var(--rose-500);box-shadow:0 0 0 3px var(--rose-200)}
+input.bad{border-color:var(--rose-600);background:var(--rose-50)}
+.hint{font-size:.78rem;color:var(--slate-500);margin-top:4px}
+.hint.err{color:var(--rose-700);font-weight:600}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:9px;border:1px solid var(--slate-300);border-radius:8px;background:#fff;font-size:.95rem;cursor:pointer;color:inherit}
+.seg button[aria-pressed=true]{background:var(--rose-100);border-color:var(--rose-500);color:var(--rose-800);font-weight:700}
+.unit{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}
+.unit button{padding:1px 8px;font-size:.75rem;border:1px solid var(--slate-300);border-radius:999px;background:#fff;cursor:pointer;color:var(--slate-600)}
+.unit button[aria-pressed=true]{background:var(--slate-700);border-color:var(--slate-700);color:#fff}
+.checks{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:640px){.checks{grid-template-columns:1fr 1fr}}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid var(--slate-200);border-radius:8px;cursor:pointer}
+.chk:hover{background:var(--slate-50)}
+.chk.on{background:var(--rose-50);border-color:var(--rose-300)}
+.chk input{width:18px;height:18px;margin-top:2px;accent-color:var(--rose-600);flex:none}
+.chk b{display:block;font-weight:600;color:var(--slate-700);font-size:.93rem}
+.chk span{display:block;font-size:.76rem;color:var(--slate-500)}
+.chk span.tag{display:inline-block;font-size:.68rem}
+#mbar{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;padding:8px 16px calc(8px + env(safe-area-inset-bottom));background:var(--slate-800);color:#fff;font-size:.88rem;z-index:10;cursor:pointer}
+#mbar b{font-size:1.1rem}
+@media(min-width:960px){#mbar{display:none}}
+.tag{display:inline-block;font-size:.68rem;font-weight:700;padding:0 6px;border-radius:4px;margin-left:4px;vertical-align:1px}
+.tag.g{background:var(--rose-100);color:var(--rose-800)}
+.tag.r{background:var(--slate-200);color:var(--slate-700)}
+.tag.m{background:var(--sky-50);color:var(--sky-700)}
+.subhead{font-size:.8rem;font-weight:700;color:var(--slate-500);margin:16px 0 8px;letter-spacing:.03em}
+.subhead:first-child{margin-top:0}
+.toolbar{display:flex;gap:8px;justify-content:flex-end;margin-bottom:12px;flex-wrap:wrap}
+.btn{padding:7px 14px;border-radius:8px;border:1px solid var(--slate-300);background:#fff;cursor:pointer;font-size:.88rem;color:var(--slate-700)}
+.btn:hover{background:var(--slate-50)}
+/* results */
+.score{border-top:8px solid var(--slate-300);border-radius:16px}
+.score.low{border-top-color:var(--emerald-500)}.score.mid{border-top-color:var(--amber-500)}.score.high{border-top-color:var(--rose-600)}
+.score .top{text-align:center;padding:16px 18px 12px;border-bottom:1px solid var(--slate-200)}
+.score .lbl{font-size:.75rem;font-weight:700;color:var(--slate-500);letter-spacing:.08em;text-transform:uppercase}
+.score .num{font-size:3rem;font-weight:800;line-height:1.1;margin:4px 0}
+.score .lvl{font-weight:700}
+.low .num,.low .lvl{color:var(--emerald-700)}.mid .num,.mid .lvl{color:var(--amber-700)}.high .num,.high .lvl{color:var(--rose-700)}
+.pend .num{color:var(--slate-300)}.pend .lvl{color:var(--slate-500);font-weight:600;font-size:.9rem}
+.score .rec{padding:14px 18px;background:var(--slate-50)}
+.rec .box{background:#fff;border:1px solid var(--slate-200);border-radius:8px;padding:10px 12px;font-weight:700}
+.rec p{font-size:.88rem;color:var(--slate-600);margin:10px 0 0}
+details.brk{padding:0 18px 12px;background:var(--slate-50);font-size:.83rem}
+details.brk summary{cursor:pointer;color:var(--slate-600);font-weight:600;padding:4px 0}
+table{border-collapse:collapse;width:100%}
+td,th{padding:4px 6px;border-bottom:1px solid var(--slate-200);text-align:left;vertical-align:top}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.cur td{background:var(--amber-50);font-weight:700}
+.rk .head{background:var(--slate-700);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:9px 18px;font-size:.9rem;font-weight:600}
+.rk .pill{background:var(--slate-900);border-radius:6px;padding:2px 8px;font-size:.8rem}
+.note{font-size:.88rem;color:var(--slate-600)}
+.alert{border-radius:10px;padding:10px 12px;font-size:.87rem;margin-bottom:10px;border:1px solid}
+.alert.warn{background:var(--amber-50);border-color:#fcd34d;color:#78350f}
+.alert.info{background:var(--sky-50);border-color:#bae6fd;color:#0c4a6e}
+.alert.danger{background:var(--rose-50);border-color:var(--rose-300);color:var(--rose-800)}
+.alert b{display:block;margin-bottom:2px}
+ul.plain{margin:6px 0 0;padding-left:18px}
+ul.plain li{margin:3px 0}
+.forrest{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.forrest button{padding:6px 10px;border:1px solid var(--slate-300);border-radius:8px;background:#fff;cursor:pointer;font-size:.85rem;color:inherit}
+.forrest button[aria-pressed=true]{background:var(--rose-700);border-color:var(--rose-700);color:#fff}
+.src{font-size:.78rem;color:var(--slate-500)}
+.src li{margin:3px 0}
+footer{text-align:center;font-size:.78rem;color:var(--slate-500);margin-top:12px;padding:0 12px}
+@media print{body{background:#fff}.toolbar,.forrest,#mbar{display:none}.side{position:static;max-height:none}.card{break-inside:avoid;box-shadow:none}}
+</style>
 </head>
-<body class="bg-rose-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
-  <div id="app" class="max-w-5xl mx-auto px-4 py-6 md:py-10">
-    
-    <header class="mb-8 text-center">
-      <h1 class="text-3xl font-bold text-rose-800 mb-2">急性上消化道出血 (UGIB) 風險計算機</h1>
-      <p class="text-sm text-slate-500">同步計算 Glasgow-Blatchford Score (GBS) 與 臨床 Rockall Score</p>
-    </header>
+<body>
+<div class="wrap">
+  <header>
+    <h1>急性上消化道出血 (UGIB) 風險分級</h1>
+    <p>Glasgow-Blatchford Score (GBS) ＋ Pre-endoscopic Rockall Score · 處置對應 ACG 2021 指引</p>
+  </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- 左側：統一表單輸入區 -->
-      <div class="lg:col-span-2 space-y-6">
-        
-        <div class="bg-white shadow-md rounded-xl overflow-hidden border border-slate-200">
-          <div class="bg-rose-700 px-5 py-3">
-            <h2 class="text-white font-semibold">1. 基本資料與生命徵象 (Vitals)</h2>
-          </div>
-          <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">年齡 (歲)</label>
-              <input type="number" v-model.number="pt.age" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">性別</label>
-              <div class="flex gap-2">
-                <button @click="pt.gender = 'M'" :class="pt.gender === 'M' ? 'bg-rose-100 border-rose-500 text-rose-800 font-bold' : 'hover:bg-slate-50'" class="flex-1 p-2 border rounded transition-colors text-sm">男性</button>
-                <button @click="pt.gender = 'F'" :class="pt.gender === 'F' ? 'bg-rose-100 border-rose-500 text-rose-800 font-bold' : 'hover:bg-slate-50'" class="flex-1 p-2 border rounded transition-colors text-sm">女性</button>
-              </div>
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">收縮壓 SBP (mmHg)</label>
-              <input type="number" v-model.number="pt.sbp" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">心跳 Pulse (bpm)</label>
-              <input type="number" v-model.number="pt.hr" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white shadow-md rounded-xl overflow-hidden border border-slate-200">
-          <div class="bg-rose-700 px-5 py-3">
-            <h2 class="text-white font-semibold">2. 實驗室數據 (Labs)</h2>
-          </div>
-          <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">血紅素 Hemoglobin (g/dL)</label>
-              <input type="number" v-model.number="pt.hb" step="0.1" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">血清尿素氮 BUN (mg/dL)</label>
-              <input type="number" v-model.number="pt.bun" step="0.1" min="0" class="w-full p-2 border rounded focus:ring-2 focus:ring-rose-300 outline-none">
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white shadow-md rounded-xl overflow-hidden border border-slate-200">
-          <div class="bg-rose-700 px-5 py-3">
-            <h2 class="text-white font-semibold">3. 臨床表現與共病史 (History & Comorbidities)</h2>
-          </div>
-          <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.melena}">
-              <input type="checkbox" v-model="pt.melena" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
-              <span class="font-medium text-slate-700">解黑便 (Melena)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.syncope}">
-              <input type="checkbox" v-model="pt.syncope" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
-              <span class="font-medium text-slate-700">暈厥史 (Syncope)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.hepatic}">
-              <input type="checkbox" v-model="pt.hepatic" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
-              <span class="font-medium text-slate-700">肝臟疾病 (Hepatic disease)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.heart}">
-              <input type="checkbox" v-model="pt.heart" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
-              <span class="font-medium text-slate-700">心臟衰竭 (Heart failure)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.ihd}">
-              <input type="checkbox" v-model="pt.ihd" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
-              <span class="font-medium text-slate-700">缺血性心臟病 (IHD)</span>
-            </label>
-            <label class="flex items-center space-x-3 p-2 border rounded hover:bg-slate-50 cursor-pointer" :class="{'bg-rose-50 border-rose-300': pt.renalMalignancy}">
-              <input type="checkbox" v-model="pt.renalMalignancy" class="w-5 h-5 text-rose-600 focus:ring-rose-500 rounded">
-              <span class="font-medium text-slate-700">腎衰竭 / 擴散性惡性腫瘤</span>
-            </label>
-          </div>
-        </div>
-
+  <div class="grid">
+    <main>
+      <div class="toolbar">
+        <button class="btn" id="demo" type="button">範例病人</button>
+        <button class="btn" id="reset" type="button">清除重填</button>
       </div>
 
-      <!-- 右側：結果輸出區 -->
-      <div class="lg:col-span-1 space-y-6">
-        
-        <!-- GBS 結果 -->
-        <div class="sticky top-6 bg-white rounded-2xl shadow-xl overflow-hidden border-t-8 transition-colors duration-300" :class="gbsResult.colorClass">
-          <div class="px-5 py-4 border-b text-center">
-            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Glasgow-Blatchford Score</h3>
-            <div class="text-5xl font-extrabold mb-1" :class="gbsResult.textColor">{{ gbsScore }}</div>
-            <div class="text-lg font-bold" :class="gbsResult.textColor">{{ gbsResult.riskLevel }}</div>
+      <section class="card">
+        <h2>1. 基本資料與生命徵象</h2>
+        <div class="body fields">
+          <div>
+            <label class="f" for="age">年齡 (歲) <span class="tag r">Rockall</span></label>
+            <input type="number" id="age" inputmode="numeric" min="0" max="120">
+            <div class="hint" data-for="age"></div>
           </div>
-          <div class="p-5 bg-slate-50">
-            <div class="text-xs text-slate-500 font-bold uppercase mb-2">臨床處置建議 (ACG 指引)</div>
-            <div class="font-bold text-slate-800 bg-white p-3 border rounded shadow-sm">
-              {{ gbsResult.recommendation }}
+          <div>
+            <span class="f">性別 <span class="tag g">GBS</span></span>
+            <div class="seg" id="sex">
+              <button type="button" data-v="M" aria-pressed="false">男性</button>
+              <button type="button" data-v="F" aria-pressed="false">女性</button>
             </div>
-            <p class="text-sm text-slate-600 mt-3 leading-relaxed">
-              {{ gbsResult.detail }}
-            </p>
+            <div class="hint">影響 GBS 血紅素分級</div>
+          </div>
+          <div>
+            <label class="f" for="sbp">收縮壓 SBP (mmHg) <span class="tag g">GBS</span><span class="tag r">Rockall</span></label>
+            <input type="number" id="sbp" inputmode="numeric" min="0" max="300">
+            <div class="hint" data-for="sbp"></div>
+          </div>
+          <div>
+            <label class="f" for="hr">心跳 Pulse (bpm) <span class="tag g">GBS</span><span class="tag r">Rockall</span></label>
+            <input type="number" id="hr" inputmode="numeric" min="0" max="300">
+            <div class="hint" data-for="hr"></div>
           </div>
         </div>
+      </section>
 
-        <!-- Pre-endoscopic Rockall 結果 -->
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-slate-200">
-          <div class="bg-slate-700 px-5 py-2 flex justify-between items-center">
-            <h3 class="text-white text-sm font-semibold">Pre-endoscopic Rockall</h3>
-            <span class="bg-slate-900 text-white text-xs px-2 py-1 rounded font-bold">{{ rockallScore }} 分</span>
+      <section class="card">
+        <h2>2. 實驗室數據</h2>
+        <div class="body fields">
+          <div>
+            <label class="f" for="hb">血紅素 Hb (g/dL) <span class="tag g">GBS</span></label>
+            <input type="number" id="hb" inputmode="decimal" step="0.1" min="0" max="25">
+            <div class="hint" data-for="hb"></div>
           </div>
-          <div class="p-4 text-sm text-slate-600">
-            此分數反映內視鏡檢查前的死亡與再出血風險。
-            <span v-if="rockallScore === 0" class="text-emerald-600 font-bold">目前為 0 分，死亡/再出血風險極低。</span>
-            <span v-else class="text-amber-600 font-bold">分數大於 0，具備潛在不良預後風險，應謹慎評估。</span>
+          <div>
+            <label class="f" for="bun"><span id="bunLabel">BUN (mg/dL)</span> <span class="tag g">GBS</span>
+              <span class="unit" id="bunUnit">
+                <button type="button" data-v="mgdl" aria-pressed="true">BUN mg/dL</button>
+                <button type="button" data-v="mmol" aria-pressed="false">Urea mmol/L</button>
+              </span>
+            </label>
+            <input type="number" id="bun" inputmode="decimal" step="0.1" min="0">
+            <div class="hint" data-for="bun">GBS 原始量表以 urea (mmol/L) 定義；BUN (mg/dL) = urea × 2.8</div>
           </div>
         </div>
+      </section>
 
-      </div>
-      
-    </div>
+      <section class="card">
+        <h2>3. 臨床表現與共病</h2>
+        <div class="body">
+          <div class="subhead">臨床表現</div>
+          <div class="checks">
+            <label class="chk"><input type="checkbox" id="melena"><div><b>解黑便 Melena <span class="tag g">GBS +1</span></b></div></label>
+            <label class="chk"><input type="checkbox" id="syncope"><div><b>暈厥 Syncope <span class="tag g">GBS +2</span></b><span>此次出血相關</span></div></label>
+          </div>
+          <div class="subhead">共病</div>
+          <div class="checks">
+            <label class="chk"><input type="checkbox" id="hepatic"><div><b>肝臟疾病 <span class="tag g">GBS +2</span></b><span>已知病史，或臨床/檢驗證據之急慢性肝病</span></div></label>
+            <label class="chk"><input type="checkbox" id="hf"><div><b>心臟衰竭 <span class="tag g">GBS +2</span><span class="tag r">Rockall 2</span></b><span>已知病史，或臨床/超音波證據</span></div></label>
+            <label class="chk"><input type="checkbox" id="ihd"><div><b>缺血性心臟病 IHD <span class="tag r">Rockall 2</span></b></div></label>
+            <label class="chk"><input type="checkbox" id="major"><div><b>其他重大共病 <span class="tag r">Rockall 2</span></b><span>Rockall 原定義 "any major comorbidity"</span></div></label>
+            <label class="chk"><input type="checkbox" id="severe"><div><b>腎衰竭 / 肝衰竭 / 擴散性惡性腫瘤 <span class="tag r">Rockall 3</span></b><span>僅有肝病而無肝衰竭者不勾此項</span></div></label>
+          </div>
+          <div class="subhead">處置相關（不計分）</div>
+          <div class="checks">
+            <label class="chk"><input type="checkbox" id="cvd"><div><b>已知心血管疾病 <span class="tag m">輸血閾值</span></b><span>如冠心病、中風病史</span></div></label>
+            <label class="chk"><input type="checkbox" id="acs"><div><b>目前為急性冠心症 ACS <span class="tag m">輸血閾值</span></b></div></label>
+            <label class="chk"><input type="checkbox" id="cirrhosis"><div><b>肝硬化 / 懷疑靜脈曲張出血 <span class="tag m">另循路徑</span></b><span>ACG 2021 不涵蓋靜脈曲張出血</span></div></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>4. 內視鏡前處置 <small>ACG 2021</small></h2>
+        <div class="body" id="preEndo"></div>
+      </section>
+
+      <section class="card">
+        <h2>5. 內視鏡後：潰瘍出血 (Forrest 分類) <small>ACG 2021</small></h2>
+        <div class="body">
+          <div class="forrest" id="forrest">
+            <button type="button" data-v="Ia" aria-pressed="false">Ia 噴射性出血</button>
+            <button type="button" data-v="Ib" aria-pressed="false">Ib 滲血</button>
+            <button type="button" data-v="IIa" aria-pressed="false">IIa 可見血管</button>
+            <button type="button" data-v="IIb" aria-pressed="false">IIb 附著血塊</button>
+            <button type="button" data-v="IIc" aria-pressed="false">IIc 平坦色素點</button>
+            <button type="button" data-v="III" aria-pressed="false">III 乾淨潰瘍底</button>
+          </div>
+          <div id="forrestOut" class="note">選擇內視鏡所見，顯示對應的止血與 PPI 建議。</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>參考資料</h2>
+        <div class="body">
+          <ul class="src plain">
+            <li>Laine L, et al. ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding. <i>Am J Gastroenterol</i> 2021;116:899–917. doi:10.14309/ajg.0000000000001245</li>
+            <li>Blatchford O, et al. A risk score to predict need for treatment for upper-gastrointestinal haemorrhage. <i>Lancet</i> 2000;356:1318–21.</li>
+            <li>Rockall TA, et al. Risk assessment after acute upper gastrointestinal haemorrhage. <i>Gut</i> 1996;38:316–21.</li>
+            <li>de Franchis R, et al. Baveno VII – Renewing consensus in portal hypertension. <i>J Hepatol</i> 2022;76:959–74.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <aside class="side">
+      <section class="card score pend" id="gbsCard">
+        <div class="top">
+          <div class="lbl">Glasgow-Blatchford Score</div>
+          <div class="num" id="gbsNum">–</div>
+          <div class="lvl" id="gbsLvl">請輸入資料</div>
+        </div>
+        <div class="rec">
+          <div class="lbl" style="margin-bottom:6px">臨床處置建議</div>
+          <div class="box" id="gbsRec">—</div>
+          <p id="gbsDetail"></p>
+        </div>
+        <details class="brk"><summary>計分明細</summary><table id="gbsTbl"></table></details>
+      </section>
+
+      <section class="card rk">
+        <div class="head"><span>Pre-endoscopic Rockall</span><span class="pill" id="rkNum">– 分</span></div>
+        <div class="body note" id="rkOut"></div>
+        <details class="brk"><summary>原始研究死亡率對照 (Rockall 1996)</summary><table id="rkTbl"></table></details>
+      </section>
+
+      <section class="card">
+        <div class="body" id="alerts"></div>
+      </section>
+    </aside>
   </div>
 
-  <script>
-    const { createApp, ref, computed } = Vue;
+  <div id="mbar" role="button" tabindex="0" aria-label="跳至結果">GBS <b id="mbGbs">–</b> · Rockall <b id="mbRk">–</b> <span id="mbLvl"></span></div>
+  <footer>臨床決策輔助工具，不取代臨床判斷。所有運算在瀏覽器本機完成，不上傳任何資料。 · v2.0</footer>
+</div>
 
-    createApp({
-      setup() {
-        const pt = ref({
-          age: 60,
-          gender: 'M',
-          sbp: 120,
-          hr: 80,
-          hb: 14.0,
-          bun: 15.0,
-          melena: false,
-          syncope: false,
-          hepatic: false,
-          heart: false,
-          ihd: false,
-          renalMalignancy: false
-        });
+<script>
+/*ENGINE-START*/
+(function (root) {
+  'use strict';
+  function num(v) {
+    if (v === '' || v === null || v === undefined) return null;
+    var n = typeof v === 'number' ? v : parseFloat(v);
+    return isFinite(n) ? n : null;
+  }
+  var RANGES = { age: [0, 120], sbp: [20, 300], hr: [20, 250], hb: [1, 25], bun: [1, 300] };
+  // Rockall 1996 (Gut 38:316) — mortality by initial (pre-endoscopic) score
+  var ROCKALL_MORTALITY = [0.2, 2.4, 5.6, 11.0, 24.6, 39.6, 48.9, 50.0];
 
-        // 計算 GBS
-        const gbsScore = computed(() => {
-          let score = 0;
-          
-          // BUN (mg/dL)
-          const bun = pt.value.bun;
-          if (bun >= 70.0) score += 6;
-          else if (bun >= 28.0) score += 4;
-          else if (bun >= 22.4) score += 3;
-          else if (bun >= 18.2) score += 2;
+  function bunMgdl(p) {
+    var v = num(p.bun);
+    if (v === null) return null;
+    return p.bunUnit === 'mmol' ? v * 2.8 : v;
+  }
 
-          // Hb (g/dL)
-          const hb = pt.value.hb;
-          if (pt.value.gender === 'M') {
-            if (hb < 10.0) score += 6;
-            else if (hb < 12.0) score += 3;
-            else if (hb < 13.0) score += 1;
-          } else {
-            if (hb < 10.0) score += 6;
-            else if (hb < 12.0) score += 1;
-          }
+  function validate(p) {
+    var errs = {};
+    var vals = { age: num(p.age), sbp: num(p.sbp), hr: num(p.hr), hb: num(p.hb), bun: bunMgdl(p) };
+    Object.keys(RANGES).forEach(function (k) {
+      var v = vals[k], r = RANGES[k];
+      if (v !== null && (v < r[0] || v > r[1])) errs[k] = '數值超出合理範圍 (' + r[0] + '–' + r[1] + (k === 'bun' ? ' mg/dL' : '') + ')';
+    });
+    return errs;
+  }
 
-          // SBP (mmHg)
-          const sbp = pt.value.sbp;
-          if (sbp < 90) score += 3;
-          else if (sbp < 100) score += 2;
-          else if (sbp < 110) score += 1;
+  function gbs(p) {
+    var errs = validate(p);
+    var items = [], missing = [];
+    var bun = bunMgdl(p), hb = num(p.hb), sbp = num(p.sbp), hr = num(p.hr);
+    if (bun === null || errs.bun) missing.push('BUN'); else {
+      // urea mmol/L thresholds 6.5 / 8 / 10 / 25 → BUN mg/dL ×2.8
+      var b = bun >= 70 ? 6 : bun >= 28 ? 4 : bun >= 22.4 ? 3 : bun >= 18.2 ? 2 : 0;
+      items.push(['BUN ' + (+bun.toFixed(1)) + ' mg/dL', b]);
+    }
+    if (p.sex !== 'M' && p.sex !== 'F') missing.push('性別');
+    if (hb === null || errs.hb) missing.push('Hb'); else if (p.sex === 'M' || p.sex === 'F') {
+      var h = p.sex === 'M' ? (hb < 10 ? 6 : hb < 12 ? 3 : hb < 13 ? 1 : 0)
+                            : (hb < 10 ? 6 : hb < 12 ? 1 : 0);
+      items.push(['Hb ' + hb + ' g/dL (' + (p.sex === 'M' ? '男' : '女') + ')', h]);
+    }
+    if (sbp === null || errs.sbp) missing.push('SBP'); else
+      items.push(['SBP ' + sbp + ' mmHg', sbp < 90 ? 3 : sbp < 100 ? 2 : sbp < 110 ? 1 : 0]);
+    if (hr === null || errs.hr) missing.push('心跳'); else
+      items.push(['心跳 ' + hr + ' bpm', hr >= 100 ? 1 : 0]);
+    items.push(['黑便', p.melena ? 1 : 0]);
+    items.push(['暈厥', p.syncope ? 2 : 0]);
+    items.push(['肝臟疾病', p.hepatic ? 2 : 0]);
+    items.push(['心臟衰竭', p.hf ? 2 : 0]);
+    var partial = items.reduce(function (s, i) { return s + i[1]; }, 0);
+    var complete = missing.length === 0;
+    return { score: complete ? partial : null, partial: partial, items: items, missing: missing, complete: complete, band: complete ? gbsBand(partial) : null };
+  }
 
-          // Pulse
-          if (pt.value.hr >= 100) score += 1;
+  function gbsBand(s) {
+    if (s <= 1) return 'low';
+    if (s <= 6) return 'mid';
+    return 'high';
+  }
 
-          // History / Comorbidities
-          if (pt.value.melena) score += 1;
-          if (pt.value.syncope) score += 2;
-          if (pt.value.hepatic) score += 2;
-          if (pt.value.heart) score += 2;
+  function rockall(p) {
+    var errs = validate(p);
+    var age = num(p.age), sbp = num(p.sbp), hr = num(p.hr), missing = [], items = [];
+    if (age === null || errs.age) missing.push('年齡'); else items.push(['年齡 ' + age, age >= 80 ? 2 : age >= 60 ? 1 : 0]);
+    if (sbp === null || errs.sbp) missing.push('SBP');
+    else if (sbp < 100) items.push(['休克：SBP < 100', 2]);
+    else if (hr === null || errs.hr) missing.push('心跳');
+    else items.push([hr >= 100 ? '心搏過速：HR ≥ 100' : '無休克', hr >= 100 ? 1 : 0]);
+    var c = p.severe ? 3 : (p.hf || p.ihd || p.major) ? 2 : 0;
+    items.push(['共病', c]);
+    var partial = items.reduce(function (s, i) { return s + i[1]; }, 0);
+    var complete = missing.length === 0;
+    return { score: complete ? partial : null, partial: partial, items: items, missing: missing, complete: complete,
+             mortality: complete ? ROCKALL_MORTALITY[partial] : null };
+  }
 
-          return score;
-        });
+  function transfusion(p) {
+    var hb = num(p.hb), sbp = num(p.sbp);
+    var thr = p.acs ? 8 : p.cvd ? 8 : 7;
+    var out = { threshold: thr, hb: hb, below: hb !== null && hb < thr, notes: [] };
+    if (p.acs) out.notes.push('急性冠心症：可考慮高於 8 g/dL 的閾值（證據極有限）');
+    else if (p.cvd) out.notes.push('已知心血管疾病：閾值 8 g/dL 屬合理');
+    if (sbp !== null && sbp < 90) out.notes.push('低血壓病人輸液後 Hb 會下降，可在 Hb 未降至閾值前即輸血');
+    return out;
+  }
 
-        // 判斷 GBS 處置建議
-        const gbsResult = computed(() => {
-          const score = gbsScore.value;
-          if (score <= 1) {
-            return {
-              riskLevel: '極低風險 (Very Low Risk)',
-              colorClass: 'border-emerald-500',
-              textColor: 'text-emerald-600',
-              recommendation: '可考慮門診處置與追蹤',
-              detail: '根據 ACG 2021 指引，GBS ≤ 1 的患者再出血或死亡風險極低，不需緊急輸血。建議可安排門診胃鏡，無須急診留觀或住院。'
-            };
-          } else if (score <= 6) {
-            return {
-              riskLevel: '中低風險 (Low-Moderate Risk)',
-              colorClass: 'border-amber-500',
-              textColor: 'text-amber-600',
-              recommendation: '建議住院觀察及內視鏡檢查',
-              detail: '患者具備潛在惡化風險，需安排住院並於 24 小時內進行早期內視鏡檢查 (Early Endoscopy)，並視情況給予輸液或 PPI 治療。'
-            };
-          } else {
-            return {
-              riskLevel: '高風險 (High Risk)',
-              colorClass: 'border-rose-600',
-              textColor: 'text-rose-600',
-              recommendation: '強烈建議住院 (可能需 ICU) 及緊急處置',
-              detail: '患者為內視鏡介入 (Endoscopic intervention) 或輸血的高危險群。應立即建立靜脈輸液途徑、備血，並在血流動力學穩定後盡速執行內視鏡止血。'
-            };
-          }
-        });
+  function assess(p) {
+    return { errors: validate(p), gbs: gbs(p), rockall: rockall(p), transfusion: transfusion(p) };
+  }
 
-        // 計算 Pre-endoscopic Rockall Score
-        const rockallScore = computed(() => {
-          let score = 0;
-          
-          // Age
-          if (pt.value.age >= 80) score += 2;
-          else if (pt.value.age >= 60) score += 1;
+  var api = { num: num, gbs: gbs, gbsBand: gbsBand, rockall: rockall, transfusion: transfusion, validate: validate, assess: assess, ROCKALL_MORTALITY: ROCKALL_MORTALITY };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.UGIB = api;
+})(this);
+/*ENGINE-END*/
 
-          // Shock
-          if (pt.value.sbp < 100) score += 2;
-          else if (pt.value.hr >= 100) score += 1; // SBP>=100 is implied
+(function () {
+  'use strict';
+  var E = window.UGIB;
+  var NUMS = ['age', 'sbp', 'hr', 'hb', 'bun'];
+  var CHECKS = ['melena', 'syncope', 'hepatic', 'hf', 'ihd', 'major', 'severe', 'cvd', 'acs', 'cirrhosis'];
+  var state = { sex: '', bunUnit: 'mgdl', forrest: '' };
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
 
-          // Comorbidities
-          if (pt.value.hepatic || pt.value.renalMalignancy) {
-            score += 3;
-          } else if (pt.value.heart || pt.value.ihd) {
-            score += 2;
-          }
+  function read() {
+    var p = { sex: state.sex, bunUnit: state.bunUnit };
+    NUMS.forEach(function (k) { p[k] = $(k).value; });
+    CHECKS.forEach(function (k) { p[k] = $(k).checked; });
+    return p;
+  }
 
-          return score;
-        });
+  function setPressed(groupId, v) {
+    [].forEach.call($(groupId).querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === v)); });
+  }
 
-        return { pt, gbsScore, gbsResult, rockallScore };
-      }
-    }).mount('#app');
-  </script>
+  function rows(items) {
+    return items.map(function (i) { return '<tr><td>' + esc(i[0]) + '</td><td class="n">+' + i[1] + '</td></tr>'; }).join('');
+  }
+
+  var GBS_TEXT = {
+    low: { lvl: '極低風險 (Very low risk)', rec: '可考慮出院，門診追蹤及安排胃鏡',
+      detail: 'ACG 2021 建議 #1：GBS 0–1（院內介入或死亡偽陰性率 ≤1%）的急診病人，建議出院門診追蹤而非住院（conditional）。仍需確認無持續出血、可回診、無其他住院理由。' },
+    mid: { lvl: '需住院評估 (GBS ≥ 2)', rec: '住院或留觀，24 小時內安排內視鏡',
+      detail: 'ACG 2021 建議 #5：住院或留觀之 UGIB 病人，建議於到院 24 小時內接受內視鏡（conditional）。' },
+    high: { lvl: '高風險 (GBS ≥ 7)', rec: '積極復甦後，24 小時內內視鏡；評估加護需求',
+      detail: '分數愈高，需輸血或內視鏡介入的機率愈高。先建立靜脈通路、備血、矯正血流動力學並處理共病，再於 24 小時內內視鏡。ACG 2021 已不再建議高風險病人常規於 12 小時內做內視鏡（試驗未顯示好處）。' }
+  };
+
+  function render() {
+    var p = read(), r = E.assess(p);
+
+    NUMS.forEach(function (k) {
+      var h = document.querySelector('.hint[data-for="' + k + '"]');
+      var bad = !!r.errors[k];
+      $(k).classList.toggle('bad', bad);
+      $(k).setAttribute('aria-invalid', String(bad));
+      if (!h) return;
+      if (!h.dataset.base) h.dataset.base = h.textContent;
+      h.textContent = bad ? r.errors[k] : h.dataset.base;
+      h.classList.toggle('err', bad);
+    });
+    CHECKS.forEach(function (k) { $(k).closest('.chk').classList.toggle('on', $(k).checked); });
+
+    // GBS
+    var g = r.gbs, card = $('gbsCard');
+    card.classList.remove('low', 'mid', 'high', 'pend');
+    if (g.complete) {
+      var t = GBS_TEXT[g.band];
+      card.classList.add(g.band);
+      $('gbsNum').textContent = g.score;
+      $('gbsLvl').textContent = t.lvl;
+      $('gbsRec').textContent = t.rec;
+      $('gbsDetail').textContent = t.detail;
+    } else {
+      card.classList.add('pend');
+      $('gbsNum').textContent = '–';
+      $('gbsLvl').textContent = '尚缺：' + g.missing.join('、');
+      $('gbsRec').textContent = '資料不完整，暫不判讀';
+      $('gbsDetail').textContent = g.partial ? '目前已計 ' + g.partial + ' 分（不完整）。空白欄位不會被當作 0 分。' : '';
+    }
+    $('gbsTbl').innerHTML = rows(g.items) + '<tr><th>合計</th><th class="n">' + (g.complete ? g.score : g.partial + '（不完整）') + '</th></tr>';
+
+    $('mbGbs').textContent = g.complete ? g.score : '–';
+    $('mbLvl').textContent = g.complete ? '· ' + GBS_TEXT[g.band].lvl.split(' (')[0] : '· 資料未完整';
+
+    // Rockall
+    var k = r.rockall;
+    $('mbRk').textContent = k.complete ? k.score : '–';
+    $('rkNum').textContent = (k.complete ? k.score : '–') + ' 分';
+    $('rkOut').innerHTML = k.complete
+      ? '內視鏡前 Rockall ' + k.score + ' 分（最高 7 分）；原始世代此分數之死亡率約 <b>' + k.mortality + '%</b>。' +
+        (k.score === 0 ? '<br><span style="color:var(--emerald-700);font-weight:700">0 分：死亡風險極低。</span>' : '') +
+        '<br><span class="src">Rockall 主要預測死亡；預測需不需要介入/能否出院，以 GBS 較佳。</span>'
+      : '尚缺：' + esc(k.missing.join('、'));
+    $('rkTbl').innerHTML = '<tr><th>分數</th><th class="n">死亡率</th></tr>' + E.ROCKALL_MORTALITY.map(function (m, i) {
+      return '<tr' + (k.complete && k.score === i ? ' class="cur"' : '') + '><td>' + i + '</td><td class="n">' + m + '%</td></tr>';
+    }).join('');
+
+    // alerts
+    var a = [], tf = r.transfusion;
+    if (p.cirrhosis) a.push('<div class="alert danger"><b>疑靜脈曲張出血：本工具之 ACG 2021 建議不適用</b>依 Baveno VII：儘早給予血管活性藥物（terlipressin / somatostatin / octreotide）、預防性抗生素（如 ceftriaxone 1 g/24 h）、限制性輸血（Hb 7 g/dL，目標 7–8），並於血流動力學穩定後 12 小時內內視鏡。</div>');
+    if (tf.hb !== null && !r.errors.hb) {
+      a.push('<div class="alert ' + (tf.below ? 'danger' : 'info') + '"><b>輸血：' + (tf.below ? 'Hb ' + tf.hb + ' < ' + tf.threshold + ' g/dL，建議輸注紅血球' : 'Hb ' + tf.hb + ' g/dL，未達輸血閾值 ' + tf.threshold + ' g/dL') + '</b>' +
+        'ACG 2021 建議 #2：限制性輸血，閾值 Hb 7 g/dL（conditional）。' + (tf.notes.length ? '<ul class="plain">' + tf.notes.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '') + '</div>');
+    } else {
+      a.push('<div class="alert info"><b>輸血閾值</b>限制性輸血：Hb &lt; 7 g/dL（已知心血管疾病 8 g/dL）。輸入 Hb 後自動判讀。</div>');
+    }
+    if (p.hepatic && !p.severe) a.push('<div class="alert warn"><b>Rockall 共病提醒</b>已勾「肝臟疾病」（GBS）。若已達肝衰竭，請另勾「腎衰竭 / 肝衰竭 / 擴散性惡性腫瘤」，Rockall 才會計 3 分。</div>');
+    $('alerts').innerHTML = a.join('');
+
+    $('preEndo').innerHTML =
+      '<ul class="plain note">' +
+      '<li><b>Erythromycin</b>（建議 #3，conditional）：250 mg IV，輸注 5–30 分鐘，於內視鏡前 20–90 分鐘給予；可減少重複內視鏡及住院天數。QT 延長、電解質異常、併用延長 QT 藥物者審慎。</li>' +
+      '<li><b>內視鏡前 PPI</b>（#4）：指引無法做出支持或反對的建議；可降低內視鏡下高風險病灶比例，但未證實改善再出血或死亡。</li>' +
+      '<li><b>內視鏡時機</b>（#5）：住院/留觀者 24 小時內。先完成復甦與共病處理。</li>' +
+      '<li><b>輸血</b>（#2）：限制性策略，Hb 7 g/dL（心血管疾病 8 g/dL）。</li>' +
+      '</ul>';
+
+    try { localStorage.setItem('ugib-v2', JSON.stringify({ p: p, forrest: state.forrest })); } catch (e) {}
+  }
+
+  var FORREST = {
+    hi: '<div class="alert danger"><b>高風險病灶：需內視鏡止血（建議 #6，strong）</b>' +
+        '<ul class="plain"><li>首選：雙極電燒、heater probe、無水酒精注射（#8，strong）；亦可用止血夾、APC、soft monopolar（#9）。</li>' +
+        '<li>Epinephrine 注射<b>不可單獨使用</b>，須合併另一種止血方式（#10，strong）。</li>' +
+        '<li>止血後：高劑量 PPI 3 天（#13，strong）— 連續：80 mg bolus + 8 mg/h；或間歇：40 mg 每日 2–4 次（可口服，可先給 80 mg bolus）。</li>' +
+        '<li>之後口服 PPI 每日兩次，至內視鏡後滿 2 週（#14）。</li></ul></div>',
+    tc325: '<div class="alert warn"><b>活動性出血可加用 TC-325 止血粉（#11，conditional）</b></div>',
+    clot: '<div class="alert warn"><b>附著血塊 (IIb)：指引無法建議是否做內視鏡治療（#7）</b>可沖洗嘗試移除血塊後依底下病灶處理；若給予內視鏡治療，術後依高風險病灶給予高劑量 PPI。</div>',
+    lo: '<div class="alert info"><b>低風險病灶：不需內視鏡止血</b>給予標準 PPI（如每日一次口服）；ACG 2021 未評估此族群之 PPI 方案。符合條件可早期進食、考慮提早出院。</div>',
+    rebleed: '<div class="note"><b>再出血</b>：建議重做內視鏡並內視鏡治療，而非直接手術或栓塞（#15）；先前成功止血後再出血者，可考慮 over-the-scope clip（#12）。<br><b>內視鏡治療失敗</b>：建議經導管動脈栓塞 TAE（#16），其次手術。</div>'
+  };
+  function renderForrest() {
+    var f = state.forrest, h = '';
+    if (!f) h = '<div class="note">選擇內視鏡所見，顯示對應的止血與 PPI 建議。</div>';
+    else if (f === 'Ia' || f === 'Ib') h = FORREST.hi + FORREST.tc325 + FORREST.rebleed;
+    else if (f === 'IIa') h = FORREST.hi + FORREST.rebleed;
+    else if (f === 'IIb') h = FORREST.clot + FORREST.rebleed;
+    else h = FORREST.lo;
+    $('forrestOut').innerHTML = h;
+    setPressed('forrest', f);
+  }
+
+  function fill(p) {
+    state.sex = p.sex || ''; state.bunUnit = p.bunUnit || 'mgdl';
+    NUMS.forEach(function (k) { $(k).value = p[k] == null ? '' : p[k]; });
+    CHECKS.forEach(function (k) { $(k).checked = !!p[k]; });
+    setPressed('sex', state.sex); setPressed('bunUnit', state.bunUnit); updateBunLabel();
+  }
+  function updateBunLabel() {
+    $('bunLabel').textContent = state.bunUnit === 'mmol' ? 'Urea (mmol/L)' : 'BUN (mg/dL)';
+  }
+
+  $('sex').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    state.sex = b.dataset.v; setPressed('sex', state.sex); render();
+  });
+  $('bunUnit').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || b.dataset.v === state.bunUnit) return;
+    e.preventDefault();
+    var v = E.num($('bun').value);
+    if (v !== null) $('bun').value = +(b.dataset.v === 'mmol' ? v / 2.8 : v * 2.8).toFixed(1);
+    state.bunUnit = b.dataset.v; setPressed('bunUnit', state.bunUnit); updateBunLabel(); render();
+  });
+  $('forrest').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    state.forrest = state.forrest === b.dataset.v ? '' : b.dataset.v; renderForrest(); render();
+  });
+  document.querySelector('main').addEventListener('input', render);
+  document.querySelector('main').addEventListener('change', render);
+  $('reset').addEventListener('click', function () { fill({}); state.forrest = ''; renderForrest(); render(); });
+  $('demo').addEventListener('click', function () {
+    fill({ age: 72, sex: 'M', sbp: 96, hr: 108, hb: 9.2, bun: 42, melena: true, ihd: true, cvd: true, bunUnit: 'mgdl' });
+    render();
+  });
+
+  try {
+    var saved = JSON.parse(localStorage.getItem('ugib-v2') || 'null');
+    if (saved && saved.p) { fill(saved.p); state.forrest = saved.forrest || ''; }
+  } catch (e) {}
+  $('mbar').addEventListener('click', function () { $('gbsCard').scrollIntoView({ behavior: 'smooth' }); });
+  renderForrest();
+  render();
+
+  if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(function () {});
+})();
+</script>
 </body>
 </html>
