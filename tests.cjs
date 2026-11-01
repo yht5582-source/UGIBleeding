@@ -51,4 +51,48 @@ t('transfusion thresholds', () => {
   assert.strictEqual(E.transfusion({ hb: '' }).below, false);
   assert.strictEqual(E.transfusion({ hb: 9, sbp: 80 }).notes.length, 1);
 });
+// teaching tabs: every number on a case or calc item comes from the engine
+const block = (a, b, v) => new Function(html.slice(html.indexOf(a), html.indexOf(b)) + '; return ' + v)();
+const CASES = block('/*CASES-START*/', '/*CASES-END*/', 'UGIB_CASES');
+const QUIZ = block('/*QUIZ-START*/', '/*QUIZ-END*/', 'UGIB_QUIZ');
+const MAP = block('/*MAP-START*/', '/*MAP-END*/', 'UGIB_MAP');
+t('6 cases', () => assert.strictEqual(CASES.length, 6));
+CASES.forEach(c => t('case ' + c.id + ' matches engine', () => {
+  const r = E.assess(c.input), x = c.expect;
+  assert.deepStrictEqual(r.errors, {});
+  assert.strictEqual(r.gbs.score, x.gbs);
+  assert.strictEqual(r.gbs.band, x.band);
+  assert.strictEqual(r.rockall.score, x.rockall);
+  if (x.mortality !== undefined) assert.strictEqual(r.rockall.mortality, x.mortality);
+  assert.strictEqual(r.transfusion.threshold, x.threshold);
+  assert.strictEqual(r.transfusion.below, x.below);
+  assert.ok(c.q.length >= 3 && c.pit && c.src && c.stem);
+}));
+t('case ids unique, Forrest valid', () => {
+  assert.strictEqual(new Set(CASES.map(c => c.id)).size, 6);
+  CASES.forEach(c => { if (c.forrest) assert.ok(['Ia', 'Ib', 'IIa', 'IIb', 'IIc', 'III'].includes(c.forrest)); });
+});
+t('quiz 10 basic + 10 advanced', () => {
+  assert.strictEqual(QUIZ.length, 20);
+  assert.strictEqual(QUIZ.filter(q => q.l === 'basic').length, 10);
+  assert.strictEqual(QUIZ.filter(q => q.l === 'adv').length, 10);
+});
+t('quiz items well formed, answers A–D five each', () => {
+  const n = [0, 0, 0, 0];
+  QUIZ.forEach(q => {
+    assert.strictEqual(q.o.length, 4);
+    assert.strictEqual(new Set(q.o).size, 4);
+    assert.ok(q.x && q.s);
+    n[q.a]++;
+  });
+  assert.deepStrictEqual(n, [5, 5, 5, 5]);
+});
+t('calc quiz item agrees with engine', () => {
+  const q = QUIZ.find(q => q.calc);
+  assert.strictEqual(q.o[q.a], E.gbs(q.calc).score + ' 分');
+});
+t('map has both sides, every leaf labelled', () => {
+  assert.ok(MAP.dx.length >= 4 && MAP.tx.length >= 4);
+  MAP.dx.concat(MAP.tx).forEach(b => { assert.ok(b.t && b.l.length); b.l.forEach(l => assert.ok(l[0] && l[1])); });
+});
 console.log('ok ' + n + ' tests');

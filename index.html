@@ -98,7 +98,68 @@ ul.plain li{margin:3px 0}
 .src{font-size:.78rem;color:var(--slate-500)}
 .src li{margin:3px 0}
 footer{text-align:center;font-size:.78rem;color:var(--slate-500);margin-top:12px;padding:0 12px}
-@media print{body{background:#fff}.toolbar,.forrest,#mbar{display:none}.side{position:static;max-height:none}.card{break-inside:avoid;box-shadow:none}}
+[hidden]{display:none!important}
+.tabs{display:flex;gap:4px;margin:0 0 20px;border-bottom:2px solid var(--rose-200);overflow-x:auto}
+.tabs button{flex:none;padding:10px 16px;border:0;border-bottom:3px solid transparent;margin-bottom:-2px;background:none;font:inherit;font-size:.95rem;color:var(--slate-600);cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected=true]{border-bottom-color:var(--rose-700);color:var(--rose-800);font-weight:700}
+.tabs button:focus-visible,.opt:focus-visible,.mm-head:focus-visible,.pick button:focus-visible,details.step summary:focus-visible{outline:2px solid var(--rose-600);outline-offset:2px}
+body:not([data-view=tool]) #mbar{display:none}
+body:not([data-view=tool]){padding-bottom:24px}
+.narrow{max-width:820px;margin:0 auto}
+.lead{color:var(--slate-600);font-size:.92rem;margin:0 0 14px}
+.pick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.pick button{padding:7px 12px;border:1px solid var(--slate-300);border-radius:8px;background:#fff;font:inherit;font-size:.86rem;color:inherit;cursor:pointer}
+.pick button[aria-pressed=true]{background:var(--rose-700);border-color:var(--rose-700);color:#fff}
+.stem{margin:0 0 12px}
+table.kv{margin-bottom:14px;font-size:.88rem}
+table.kv th{width:9em;color:var(--slate-500);font-weight:600}
+.chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.chip{border:1px solid var(--slate-200);border-top:4px solid var(--slate-300);border-radius:10px;padding:8px;text-align:center;min-width:0}
+.chip span{display:block;font-size:.72rem;font-weight:700;color:var(--slate-500)}
+.chip b{display:block;font-size:1.6rem;line-height:1.2}
+.chip i{display:block;font-style:normal;font-size:.72rem;color:var(--slate-600)}
+.chip.low{border-top-color:var(--emerald-500)}.chip.mid{border-top-color:var(--amber-500)}.chip.high{border-top-color:var(--rose-600)}
+.qh{font-size:.95rem;color:var(--rose-800);margin:18px 0 8px}
+details.step{border:1px solid var(--slate-200);border-radius:8px;margin-bottom:8px;background:#fff}
+details.step summary{cursor:pointer;padding:9px 12px;font-weight:600;font-size:.92rem}
+details.step[open] summary{background:var(--rose-50);border-radius:8px 8px 0 0}
+details.step p{margin:0;padding:10px 12px;font-size:.9rem;color:var(--slate-700)}
+.pit{margin-top:14px}
+.qbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px}
+.qbar .pick{margin:0}
+#quizScore{font-size:.88rem;font-weight:700;color:var(--slate-700)}
+.qz{margin-bottom:12px}
+.qt{margin:0 0 10px;font-weight:600}
+.qt .tag{margin-left:0}
+.opts{display:grid;gap:6px}
+.opt{display:block;width:100%;padding:9px 12px;text-align:left;border:1px solid var(--slate-300);border-radius:8px;background:#fff;font:inherit;font-size:.92rem;color:inherit;cursor:pointer}
+.opt:hover:not(:disabled){background:var(--rose-50)}
+.opt:disabled{cursor:default;color:var(--slate-500)}
+.opt.ok{background:var(--emerald-50);border-color:var(--emerald-500);color:var(--emerald-700);font-weight:700}
+.opt.no{background:var(--rose-50);border-color:var(--rose-500);color:var(--rose-800)}
+.expl{margin:10px 0 0}
+.expl:focus{outline:none}
+.mm{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr);column-gap:34px;align-items:start}
+#mm-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#mm-links path{fill:none;stroke-width:2;opacity:.5}
+#mm-links path.dx{stroke:var(--rose-600)}#mm-links path.tx{stroke:var(--sky-700)}
+.mm-side{position:relative;min-width:0}
+.mm-center{position:relative;align-self:center;background:var(--slate-800);color:#fff;border-radius:12px;padding:14px 6px;text-align:center;font-weight:700;font-size:.9rem;line-height:1.5}
+.mm-col{margin:0 0 10px;font-size:1rem}
+.mm-col.dx{color:var(--rose-700)}.mm-col.tx{color:var(--sky-700)}
+.mm-branch{margin-bottom:10px}
+.mm-head{display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%;border:0;border-radius:8px;padding:8px 12px;font:inherit;text-align:left;line-height:1.4;color:#fff;cursor:pointer}
+.mm-branch.dx .mm-head{background:var(--rose-700)}.mm-branch.tx .mm-head{background:var(--sky-700)}
+.mm-head::after{content:"＋";grid-column:2;grid-row:1/span 2;align-self:center;padding-left:10px}
+.mm-head[aria-expanded=true]::after{content:"－"}
+.mm-head[aria-expanded=true]{border-radius:8px 8px 0 0}
+.mm-t{font-weight:700;font-size:.92rem}.mm-s{font-size:.76rem;opacity:.9;grid-column:1}
+.mm-leaves{list-style:none;margin:0;padding:6px 12px;font-size:.85rem;border:1px solid var(--slate-200);border-top:0;border-radius:0 0 8px 8px;background:#fff}
+.mm-leaves li{padding:4px 0;border-bottom:1px dashed var(--slate-200)}
+.mm-leaves li:last-child{border-bottom:0}
+.mm-leaves b{display:block;color:var(--slate-700);font-size:.82rem}
+@media(max-width:820px){.mm{grid-template-columns:minmax(0,1fr);row-gap:14px}#mm-links{display:none}.mm-center{order:-1;padding:10px}.mm-center br{display:none}}
+@media print{body{background:#fff}.toolbar,.forrest,#mbar,.tabs,#mm-links,.pick,.qbar{display:none!important}.mm-leaves[hidden]{display:block!important}.mm{display:block}.mm-center{display:none}details.step>*{display:block}.side{position:static;max-height:none}.card{break-inside:avoid;box-shadow:none}}
 </style>
 </head>
 <body>
@@ -108,6 +169,14 @@ footer{text-align:center;font-size:.78rem;color:var(--slate-500);margin-top:12px
     <p>Glasgow-Blatchford Score (GBS) ＋ Pre-endoscopic Rockall Score · 處置對應 ACG 2021 指引</p>
   </header>
 
+  <nav class="tabs" id="tabs" role="tablist" aria-label="功能分頁">
+    <button type="button" role="tab" id="tab-tool" aria-controls="view-tool" aria-selected="true">風險計算</button>
+    <button type="button" role="tab" id="tab-cases" aria-controls="view-cases" aria-selected="false" tabindex="-1">示範病例</button>
+    <button type="button" role="tab" id="tab-quiz" aria-controls="view-quiz" aria-selected="false" tabindex="-1">考題</button>
+    <button type="button" role="tab" id="tab-map" aria-controls="view-map" aria-selected="false" tabindex="-1">心智圖</button>
+  </nav>
+
+  <div id="view-tool" role="tabpanel" aria-labelledby="tab-tool">
   <div class="grid">
     <main>
       <div class="toolbar">
@@ -249,9 +318,51 @@ footer{text-align:center;font-size:.78rem;color:var(--slate-500);margin-top:12px
       </section>
     </aside>
   </div>
+  </div>
+
+  <div id="view-cases" role="tabpanel" aria-labelledby="tab-cases" hidden>
+    <div class="narrow">
+      <p class="lead">6 個示範病例。分數由頁面上的計算引擎即時算出，可一鍵帶入計算工具。</p>
+      <div class="pick" id="casePick"></div>
+      <div id="caseOut"></div>
+      <div id="caseSrc"></div>
+    </div>
+  </div>
+
+  <div id="view-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+    <div class="narrow">
+      <p class="lead">20 題單選：基礎 10 題、高階 10 題。答完立即顯示解析，作答紀錄不會儲存。</p>
+      <div class="qbar">
+        <div class="pick" id="quizLevel">
+          <button type="button" data-v="all" aria-pressed="true">全部</button>
+          <button type="button" data-v="basic" aria-pressed="false">基礎</button>
+          <button type="button" data-v="adv" aria-pressed="false">高階</button>
+        </div>
+        <span id="quizScore" aria-live="polite"></span>
+        <button class="btn" type="button" id="quizReset">重新作答</button>
+      </div>
+      <div id="quizList"></div>
+      <div id="quizSrc"></div>
+    </div>
+  </div>
+
+  <div id="view-map" role="tabpanel" aria-labelledby="tab-map" hidden>
+    <p class="lead">點分支展開細節。左邊是怎麼評估，右邊是怎麼處理。</p>
+    <div class="toolbar">
+      <button class="btn" type="button" id="mm-open">全部展開</button>
+      <button class="btn" type="button" id="mm-close">全部收合</button>
+    </div>
+    <div class="mm" id="mm">
+      <svg id="mm-links" aria-hidden="true"></svg>
+      <div class="mm-side" id="mm-dx"></div>
+      <div class="mm-center" id="mm-center">先復甦<br>再分流<br>後止血</div>
+      <div class="mm-side" id="mm-tx"></div>
+    </div>
+    <div id="mapSrc" class="narrow" style="margin-top:20px"></div>
+  </div>
 
   <div id="mbar" role="button" tabindex="0" aria-label="跳至結果">GBS <b id="mbGbs">–</b> · Rockall <b id="mbRk">–</b> <span id="mbLvl"></span></div>
-  <footer>臨床決策輔助工具，不取代臨床判斷。所有運算在瀏覽器本機完成，不上傳任何資料。 · v2.0</footer>
+  <footer>臨床決策輔助工具，不取代臨床判斷。所有運算在瀏覽器本機完成，不上傳任何資料。 · v2.1</footer>
 </div>
 
 <script>
@@ -351,6 +462,223 @@ footer{text-align:center;font-size:.78rem;color:var(--slate-500);margin-top:12px
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.UGIB = api;
 })(this);
 /*ENGINE-END*/
+
+/*CASES-START*/
+// Scores on each case are computed live by the engine; expect values are asserted in tests.cjs.
+var UGIB_CASES = [
+ {id:'c1',t:'單次黑便，生命徵象正常',tag:'極低風險',
+  stem:'41 歲女性，昨晚解一次黑便，今早到急診。近一週因腰痛自行服用 ibuprofen。無暈厥、無肝病或心臟病史。意識清楚，可回診，家人同住。',
+  input:{age:41,sex:'F',sbp:118,hr:88,hb:12.6,bun:16,melena:true,bunUnit:'mgdl'},
+  expect:{gbs:1,band:'low',rockall:0,threshold:7,below:false},
+  q:[
+   {a:'這位病人一定要住院嗎？',x:'不一定。GBS 1 分屬極低風險，ACG 2021 建議 #1 與 ESGE 2021 都支持門診處理。黑便那 1 分不會把她推出這個範圍。'},
+   {a:'這個分數的可信度有多高？',x:'Stanley 2017（3012 人）：GBS ≤ 1 預測「無介入且存活」敏感度 98.6%、特異度 34.6%。敏感度高才能放心讓人回家，特異度低表示仍有不少人不必住院卻被留下。'},
+   {a:'讓她回家前要交代什麼？',x:'停用 NSAID，安排門診胃鏡，並說清楚回診條件：再次黑便或吐血、頭暈或暈厥、胸痛。分數低不代表沒有其他住院理由，要確認她真的能回診。'}],
+  pit:'分數只回答「需不需要院內介入」。持續出血、無法回診或其他急性問題，都是獨立的住院理由。',
+  src:'ACG 2021 #1；ESGE 2021 #1；Stanley 2017'},
+ {id:'c2',t:'GBS 很高、Rockall 很低',tag:'分數不一致',
+  stem:'58 歲男性，無慢性病，服用 naproxen 兩週。連續兩天解黑便，今天起身頭暈但未暈倒。到院後輸液 1 L，生命徵象穩定下來。胃鏡見十二指腸球部潰瘍滲血（Forrest Ib）。',
+  input:{age:58,sex:'M',sbp:104,hr:108,hb:9.4,bun:40,melena:true,bunUnit:'mgdl'},forrest:'Ib',
+  expect:{gbs:13,band:'high',rockall:1,mortality:2.4,threshold:7,below:false},
+  q:[
+   {a:'GBS 13、Rockall 1，兩個分數矛盾嗎？',x:'不矛盾，兩者回答不同問題。GBS 預測需要輸血或介入；內視鏡前 Rockall 主要預測死亡，他年輕又無共病所以低。Stanley 2017：預測介入或死亡 GBS 的 AUROC 0.86，admission Rockall 0.66。'},
+   {a:'半夜到院，要叫醒內視鏡團隊嗎？',x:'復甦後已穩定，就不用趕在 6 小時內。Lau 2020 收 GBS ≥ 12：< 6 小時組 30 天死亡 8.9%，6–24 小時組 6.6%，再出血也沒有減少。依 ACG #5 在 24 小時內做。'},
+   {a:'Hb 9.4 要輸血嗎？',x:'沒有心血管疾病，閾值是 7 g/dL，目前不需要。之後隨復甦稀釋可能再掉，要追蹤。'},
+   {a:'止血後的 PPI 怎麼給？',x:'高劑量 3 天：80 mg bolus 後 8 mg/h，或間歇 40 mg 每日 2–4 次。之後 PPI 每日兩次到內視鏡後滿 2 週（#13、#14）。'}],
+  pit:'看到 GBS ≥ 12 就趕急診內視鏡是常見反射。真正要提早的，是復甦後仍不穩定的病人。',
+  src:'ACG 2021 #5、#6、#13、#14；ESGE 2026 #4；Lau 2020；Stanley 2017'},
+ {id:'c3',t:'冠心症病史，正在吃阿斯匹靈',tag:'輸血與抗血小板',
+  stem:'76 歲女性，三年前心肌梗塞放過支架，目前只吃 aspirin 100 mg 作次級預防。解黑便三天，活動時喘。無胸痛，心電圖與舊圖相同。胃鏡見胃潰瘍可見血管（Forrest IIa），已成功止血。',
+  input:{age:76,sex:'F',sbp:112,hr:96,hb:7.6,bun:38,melena:true,ihd:true,cvd:true,bunUnit:'mgdl'},forrest:'IIa',
+  expect:{gbs:11,band:'high',rockall:3,mortality:11,threshold:8,below:true},
+  q:[
+   {a:'Hb 7.6 高於 7，為什麼仍要輸血？',x:'她有已知心血管疾病。ACG 2021 認為此族群用 8 g/dL 屬合理。這個閾值借自一般輸血指引，UGIB 的隨機試驗證據不多。'},
+   {a:'阿斯匹靈要停嗎？',x:'次級預防的 aspirin 不建議停（ACG–CAG 2022）。若已中斷，在內視鏡確認止血當天恢復。ESGE 2021 則說最好在 3–5 天內恢復。'},
+   {a:'繼續吃不是會再出血嗎？',x:'會增加一些。Sung 2010：30 天再出血 aspirin 組 10.3%、安慰劑組 5.4%（差異的信賴區間跨 0）；全因死亡 1.3% 對 12.9%。試驗不大且只用 80 mg，但方向明確。'},
+   {a:'要輸血小板嗎？',x:'不建議。ACG–CAG 2022 建議，服用抗血小板藥的急性消化道出血病人不輸血小板。'}],
+  pit:'目前有急性冠心症是另一回事：ACG 明確把它和「已知心血管疾病」分開，證據很少，可考慮更高閾值。',
+  src:'ACG 2021 #2、#6；ACG–CAG 2022；ESGE 2021 #2；Sung 2010'},
+ {id:'c4',t:'酒精性肝硬化，大量吐血',tag:'靜脈曲張',
+  stem:'54 歲男性，酒精性肝硬化，有中度腹水。今晨吐鮮血約一碗。無肝性腦病變，膽紅素 2.4 mg/dL、白蛋白 2.9 g/dL、INR 1.6，Child-Pugh B9。胃鏡見食道靜脈曲張正在出血。',
+  input:{age:54,sex:'M',sbp:88,hr:118,hb:8.2,bun:30,melena:false,hepatic:true,major:true,cirrhosis:true,bunUnit:'mgdl'},
+  expect:{gbs:16,band:'high',rockall:4,mortality:24.6,threshold:7,below:false},
+  q:[
+   {a:'胃鏡之前最先給什麼？',x:'懷疑靜脈曲張出血就儘早給血管活性藥（terlipressin、somatostatin 或 octreotide），持續 2–5 天，並從入院開始給預防性抗生素，如 ceftriaxone 1 g/24 h（Baveno VII 6.5、6.7、6.9）。'},
+   {a:'輸血目標和潰瘍出血一樣嗎？',x:'同樣保守，目標 Hb 7–8 g/dL，再依心血管疾病、年齡、血流動力和是否持續出血調整（6.2）。Hb 8.2 不必急著輸，但他正在休克與出血，要持續評估。'},
+   {a:'內視鏡時機與呼吸道？',x:'復甦後 12 小時內，不穩定就在安全可行時儘快（6.17）。意識改變或正在吐血者，內視鏡前建議插管，結束後儘快拔管（6.3、6.4）。止血用套紮（6.21）。'},
+   {a:'套紮成功後就結束了嗎？',x:'他是 Child-Pugh B > 7 且內視鏡時正在出血，符合 pre-emptive TIPS：72 小時內、最好 24 小時內（6.27）。另外要做腹部影像排除門靜脈血栓與肝癌（6.26）。'},
+   {a:'內視鏡前開的 PPI 呢？',x:'除非有明確適應症，內視鏡後應立即停用（6.12）。這和潰瘍出血的高劑量 PPI 正好相反。'}],
+  pit:'ACG 2021 不涵蓋靜脈曲張出血。本例 Rockall 把失代償肝硬化算「其他重大共病」2 分，若判定已肝衰竭則是 3 分，屬臨床判斷。',
+  src:'Baveno VII 6.2–6.27；García-Pagán 2010'},
+ {id:'c5',t:'心衰竭合併心房顫動，服用 warfarin',tag:'抗凝血劑',
+  stem:'69 歲女性，心衰竭合併心房顫動，長期服用 warfarin，無機械瓣膜。解黑便兩天，INR 3.2。生命徵象穩定，沒有持續大量出血的跡象。',
+  input:{age:69,sex:'F',sbp:122,hr:92,hb:10.5,bun:30,melena:true,hf:true,cvd:true,bunUnit:'mgdl'},
+  expect:{gbs:8,band:'high',rockall:3,mortality:11,threshold:8,below:false},
+  q:[
+   {a:'INR 3.2，要先給 FFP 或維生素 K 嗎？',x:'ACG–CAG 2022 建議不給。真的需要逆轉時，建議用 PCC 而不是 FFP。至於 PCC 和不給相比，指引證據不足，無法表態，所以不是每個人都要給。'},
+   {a:'若她吃的是 apixaban 呢？',x:'同一指引建議不給 PCC，也不給 andexanet alfa；dabigatran 則建議不給 idarucizumab。這些都是條件式建議，危及生命的大出血仍要個別判斷。'},
+   {a:'抗凝血劑何時恢復？',x:'ESGE 2026 #17：依血栓風險，在臨床上適當時儘快恢復。ACG–CAG 2022 因證據不足，對同日或 1–7 天後恢復沒有表態。'},
+   {a:'為什麼心衰竭同時影響三個地方？',x:'GBS +2、Rockall 共病 2 分，並使輸血閾值落在 8 g/dL。計算工具裡要勾「心臟衰竭」和「已知心血管疾病」兩項。'}],
+  pit:'看到 INR 高就反射性開 FFP，是最常見的偏離。指引同時也不建議開維生素 K。',
+  src:'ACG–CAG 2022；ESGE 2026 #17；ACG 2021 #2'},
+ {id:'c6',t:'後壁十二指腸潰瘍止血後再出血',tag:'再出血與救援',
+  stem:'66 歲男性，暈厥後送醫。輸液輸血後穩定，胃鏡見十二指腸球部後壁 2.5 cm 潰瘍噴血（Forrest Ia），以 epinephrine 加 heater probe 止血。住院第 2 天再度解大量血便，血壓 86/50 mmHg。',
+  input:{age:66,sex:'M',sbp:92,hr:116,hb:8.0,bun:48,melena:true,syncope:true,bunUnit:'mgdl'},forrest:'Ia',
+  expect:{gbs:16,band:'high',rockall:3,mortality:11,threshold:7,below:false},
+  q:[
+   {a:'再出血的第一步？',x:'復甦後重做內視鏡並再次治療，而不是直接開刀或栓塞（ACG #15）。ACG 引用的隨機試驗：先內視鏡的病人 27% 後來仍需手術，其餘免於開刀，併發症也較少（14.6% 對 36.4%）。'},
+   {a:'這次用什麼止血？',x:'考慮 over-the-scope clip（ACG #12、ESGE 2026 #16）。'},
+   {a:'第二次內視鏡也失敗呢？',x:'下一步是經導管動脈栓塞 TAE（ACG #16、ESGE 2026 #13、#16），TAE 失敗或沒有 TAE 才手術。'},
+   {a:'能不能在再出血之前就預防？',x:'ESGE 2026 #14 建議可考慮預防性 TAE，對象是選擇性的高風險病人：到院血流動力不穩、後壁十二指腸潰瘍、潰瘍 > 2 cm，或止血不夠持久。這位病人三項都符合。ACG 2021 未提出此建議。'}],
+  pit:'血壓低時別只看 Hb 8.0。ACG 指出低血壓病人復甦後 Hb 還會往下掉，可在降到 7 之前就輸血。',
+  src:'ACG 2021 #2、#12、#15、#16；ESGE 2026 #13、#14、#16'}
+];
+/*CASES-END*/
+
+/*QUIZ-START*/
+// Option order is fixed; answers are spread A–D five each. calc items are asserted against the engine in tests.cjs.
+var UGIB_QUIZ = [
+ {l:'basic',q:'45 歲男性，BUN 20 mg/dL、Hb 12.5 g/dL、SBP 125、心跳 88，有黑便，無其他病史。GBS 是幾分？',o:['2 分','3 分','4 分','5 分'],a:2,
+  calc:{sex:'M',age:45,bun:20,hb:12.5,sbp:125,hr:88,melena:true,bunUnit:'mgdl'},
+  x:'BUN 18.2–22.3 得 2 分；男性 Hb 12–12.9 得 1 分；黑便 1 分；血壓與心跳不計分。合計 4 分。',s:'ACG 2021 Table 2'},
+ {l:'basic',q:'ACG 2021 建議可不住院、門診追蹤的 GBS 範圍是？',o:['0–1 分','0–3 分','0–5 分','0–6 分'],a:0,
+  x:'GBS 0–1。ACG 定義極低風險為院內介入或死亡的偽陰性率 ≤ 1%。',s:'ACG 2021 #1'},
+ {l:'basic',q:'沒有心血管疾病、血流動力穩定的 UGIB 病人，紅血球輸血閾值是？',o:['Hb 6 g/dL','Hb 7 g/dL','Hb 9 g/dL','Hb 10 g/dL'],a:1,
+  x:'7 g/dL。Villanueva 2013：限制性（< 7）比寬鬆性（< 9）6 週存活高（95% 對 91%），再出血也少（10% 對 16%）。',s:'ACG 2021 #2；Villanueva 2013'},
+ {l:'basic',q:'有冠心症病史、目前無急性冠心症的 UGIB 病人，ACG 2021 認為合理的輸血閾值是？',o:['Hb 7 g/dL','Hb 9 g/dL','Hb 10 g/dL','Hb 8 g/dL'],a:3,
+  x:'8 g/dL。這和目前正在發生的急性冠心症不同，後者證據很少，可考慮更高。',s:'ACG 2021 #2 說明'},
+ {l:'basic',q:'住院或留觀的 UGIB 病人，ACG 2021 建議內視鏡在何時完成？',o:['到院 6 小時內','到院 12 小時內','到院 24 小時內','到院 72 小時內'],a:2,
+  x:'24 小時內，且先完成復甦與共病處理。',s:'ACG 2021 #5'},
+ {l:'basic',q:'內視鏡前使用 erythromycin，ACG 2021 的用法是？',o:['250 mg IV，內視鏡前 20–90 分鐘','250 mg 口服，內視鏡前 6 小時','500 mg IV，內視鏡前 4 小時','1 g IV，內視鏡後立即給'],a:0,
+  x:'250 mg IV 輸注 5–30 分鐘，內視鏡前 20–90 分鐘給。可減少重複內視鏡與住院天數，但未證實減少再出血。留意 QT 延長。',s:'ACG 2021 #3'},
+ {l:'basic',q:'下列哪一組潰瘍所見，ACG 2021 強烈建議做內視鏡止血？',o:['IIb、IIc、III','Ia、Ib、IIa','IIa、IIb、IIc','Ia、IIc、III'],a:1,
+  x:'噴血（Ia）、滲血（Ib）、可見血管（IIa）。附著血塊（IIb）指引無法表態；IIc 與 III 不需止血。',s:'ACG 2021 #6、#7'},
+ {l:'basic',q:'關於 epinephrine 注射止血，何者正確？',o:['是首選的單一療法','只適用於 Forrest III','應在 PPI 之後才能用','不可單獨使用，須合併另一種方式'],a:3,
+  x:'ACG 強烈建議 epinephrine 不單獨使用，要合併另一種止血方式。',s:'ACG 2021 #10'},
+ {l:'basic',q:'高風險潰瘍成功止血後，PPI 的建議是？',o:['每日一次口服，共 3 天','80 mg 單次靜注後改每日一次','高劑量 3 天，之後每日兩次到滿 2 週','高劑量 14 天，之後停藥'],a:2,
+  x:'連續 80 mg bolus + 8 mg/h，或間歇 40 mg 每日 2–4 次，共 3 天；之後每日兩次到內視鏡後滿 2 週。',s:'ACG 2021 #13、#14'},
+ {l:'basic',q:'肝硬化病人疑似靜脈曲張出血，到院後應儘早開始的是？',o:['高劑量 PPI 72 小時','Tranexamic acid','Erythromycin 單用','血管活性藥加預防性抗生素'],a:3,
+  x:'血管活性藥持續 2–5 天，抗生素從入院開始。內視鏡於復甦後 12 小時內。',s:'Baveno VII 6.5、6.7、6.17'},
+ {l:'adv',q:'GBS 14、內視鏡前 Rockall 1 的病人，最正確的解讀是？',o:['需要介入的機率高，死亡風險相對不高','兩者矛盾，應以 Rockall 為準，可以出院','死亡風險高，但不太需要介入','GBS 必定算錯，應重算'],a:0,
+  x:'GBS 預測輸血與介入，Rockall 主要預測死亡。Stanley 2017 預測死亡時，AIMS65 與 PNED 的 AUROC 為 0.77，admission Rockall 0.72，GBS 0.64；介入或死亡則 GBS 0.86 最佳。',s:'Stanley 2017'},
+ {l:'adv',q:'GBS 15 的病人凌晨兩點到院，輸液與輸血後已血流動力穩定。依 Lau 2020 與現行指引，最合理的安排是？',o:['立刻叫內視鏡，須在 6 小時內','完成復甦後，於到院 24 小時內內視鏡','GBS 高先做 CTA，暫不內視鏡','先用 PPI 72 小時後再評估'],a:1,
+  x:'Lau 2020 收 GBS ≥ 12：< 6 小時組與 6–24 小時組 30 天死亡無顯著差異（8.9% 對 6.6%）。該試驗排除復甦後仍休克者，這群人才需要緊急處置（ACG；ESGE 2026 #4）。',s:'Lau 2020；ACG 2021 #5；ESGE 2026 #4'},
+ {l:'adv',q:'無心血管病史，SBP 82 mmHg、持續吐血，Hb 7.8 g/dL。輸血決定？',o:['Hb > 7 不可輸','等輸液後複驗 Hb < 7 才輸','Hb 需 < 6 才輸','低血壓且持續出血，可在 Hb 達 7 之前輸血'],a:3,
+  x:'限制性輸血試驗排除了致命大出血。低血壓病人輸液後 Hb 還會往下掉，ACG 認為可在達 7 之前就輸。',s:'ACG 2021 #2 說明'},
+ {l:'adv',q:'心肌梗塞史，只吃 aspirin 次級預防，Forrest Ib 潰瘍已止血。何者符合 ACG–CAG 2022？',o:['停藥 4 週後恢復','止血確認當天恢復','改用 clopidogrel','永久停用 aspirin'],a:1,
+  x:'建議不要中斷；已中斷就在內視鏡確認止血當天恢復。Sung 2010 繼續組全因死亡 1.3%，安慰劑組 12.9%，再出血 10.3% 對 5.4%。',s:'ACG–CAG 2022；Sung 2010'},
+ {l:'adv',q:'Warfarin 使用者 INR 3.5、急性消化道出血且需要逆轉。ACG–CAG 2022 建議優先用？',o:['PCC','FFP','維生素 K','血小板'],a:0,
+  x:'建議不給 FFP 與維生素 K；需要時 PCC 優於 FFP。PCC 與安慰劑相比則證據不足，無法表態。',s:'ACG–CAG 2022'},
+ {l:'adv',q:'消化道出血病人使用 tranexamic acid，HALT-IT（約 12000 人）的結果是？',o:['出血死亡下降約四成','出血死亡下降但中風增加','出血死亡沒有下降，靜脈血栓增加','因明顯獲益而提早終止'],a:2,
+  x:'5 天內出血死亡 4% 對 4%（RR 0.99），靜脈血栓 0.8% 對 0.4%（RR 1.85）。作者結論是不應在試驗外使用。此前小型試驗的統合分析顯示的獲益沒有被證實。',s:'HALT-IT 2020'},
+ {l:'adv',q:'下列食道靜脈曲張出血病人，誰符合 Baveno VII 的 pre-emptive TIPS？',o:['Child-Pugh A6，已止血','Child-Pugh B9，內視鏡時正在出血','Child-Pugh B8，未出血，未測 HVPG','Child-Pugh C14'],a:1,
+  x:'條件是 Child-Pugh C < 14，或 B > 7 且內視鏡時活動出血或 HVPG > 20 mmHg。C14 以上 TIPS 可能無效，除非考慮移植（6.31）。時機是 72 小時內，最好 24 小時內。',s:'Baveno VII 6.27、6.31'},
+ {l:'adv',q:'Forrest IIb 附著血塊，沖洗後仍不掉。關於指引的立場，何者正確？',o:['兩者都強烈建議治療','兩者都建議不治療','ACG 建議治療，ESGE 2026 建議不治療','ACG 不表態；ESGE 2026 建議在技術能力足夠時治療'],a:3,
+  x:'ACG 2021 #7 無法表態；ESGE 2026 #5 建議移除血塊後視需要止血，前提是能安全處理轉成高風險病灶的情況。這是兩份指引的真實差異。',s:'ACG 2021 #7；ESGE 2026 #5'},
+ {l:'adv',q:'關於 TC-325 這類止血粉用於活動性潰瘍出血，何者正確描述兩份指引？',o:['ACG 建議可用；ESGE 2026 不建議作為第一線單一療法','兩者都視為第一線單一療法','兩者都禁止使用','ESGE 2026 建議取代所有止血方式'],a:0,
+  x:'ACG 2021 #11 建議活動性出血可用（條件式，極低品質證據）。ESGE 2026 #11 建議止血粉不作第一線單一療法，#12 留給常規止血無效時。',s:'ACG 2021 #11；ESGE 2026 #11、#12'},
+ {l:'adv',q:'潰瘍止血後再出血，第二次內視鏡以 over-the-scope clip 仍失敗。下一步？',o:['第三次內視鏡','提高 PPI 劑量觀察','經導管動脈栓塞，失敗或沒有才手術','立即開腹手術'],a:2,
+  x:'ACG #16 與 ESGE 2026 #16 一致：TAE 優先，TAE 不可得或失敗才手術。',s:'ACG 2021 #16；ESGE 2026 #16'}
+];
+/*QUIZ-END*/
+
+/*MAP-START*/
+// Leaves restate the guideline points used above; update by hand when sources change.
+var UGIB_MAP = {
+ dx:[
+  {t:'第一步：復甦與辨識',s:'先穩定，再算分數',l:[
+   ['灌流','先恢復血流動力，分數不能取代床邊判斷'],
+   ['呼吸道','靜脈曲張出血合併意識改變或正在吐血：內視鏡前插管'],
+   ['用藥史','NSAID、aspirin、P2Y12、warfarin、DOAC'],
+   ['肝病線索','肝硬化或疑靜脈曲張：改走靜脈曲張路徑']]},
+  {t:'GBS：要不要介入',s:'0–23 分，AUROC 0.86',l:[
+   ['BUN mg/dL','18.2 → 2、22.4 → 3、28 → 4、70 → 6'],
+   ['Hb 男','12–12.9 → 1、10–11.9 → 3、< 10 → 6'],
+   ['Hb 女','10–11.9 → 1、< 10 → 6'],
+   ['SBP','100–109 → 1、90–99 → 2、< 90 → 3'],
+   ['其他','心跳 ≥ 100 +1、黑便 +1、暈厥 +2、肝病 +2、心衰竭 +2'],
+   ['0–1','極低風險，可門診（敏感度 98.6%）'],
+   ['≥ 7','預測需內視鏡治療的最佳切點（敏感度 80%）']]},
+  {t:'Rockall：死亡風險',s:'內視鏡前 0–7 分',l:[
+   ['年齡','60–79 → 1、≥ 80 → 2'],
+   ['休克','心跳 ≥ 100 → 1、SBP < 100 → 2'],
+   ['共病','心衰竭、IHD、重大共病 → 2；腎衰竭、肝衰竭、轉移癌 → 3'],
+   ['死亡率','0 分 0.2%、3 分 11%、5 分 39.6%（1996 世代）']]},
+  {t:'其他分數',s:'知道用途即可',l:[
+   ['AIMS65','白蛋白 < 3、INR > 1.5、意識改變、SBP ≤ 90、年齡 > 65'],
+   ['預測死亡','AIMS65 與 PNED 0.77、admission Rockall 0.72、GBS 0.64'],
+   ['再出血','沒有一個分數預測得好']]},
+  {t:'Forrest：內視鏡所見',s:'決定止血與 PPI',l:[
+   ['Ia、Ib','噴血、滲血：止血'],
+   ['IIa','可見血管：止血'],
+   ['IIb','附著血塊：ACG 不表態，ESGE 2026 傾向治療'],
+   ['IIc、III','色素點、乾淨底：不需止血，標準 PPI']]}
+ ],
+ tx:[
+  {t:'輸血',s:'限制性策略',l:[
+   ['一般','Hb 7 g/dL'],
+   ['已知心血管疾病','Hb 8 g/dL'],
+   ['急性冠心症','可考慮更高，證據很少'],
+   ['低血壓或大出血','可在達閾值前輸'],
+   ['靜脈曲張','目標 7–8 g/dL']]},
+  {t:'內視鏡前藥物',s:'',l:[
+   ['Erythromycin','250 mg IV，20–90 分鐘前；留意 QT'],
+   ['沒有 erythromycin','嚴重或持續出血者可用 metoclopramide（ESGE 2026）'],
+   ['PPI','ACG 不表態；ESGE 2026 可考慮，但不可延誤內視鏡'],
+   ['Tranexamic acid','不用：死亡未降，靜脈血栓增加']]},
+  {t:'內視鏡時機',s:'穩定後 24 小時內',l:[
+   ['一般','到院 24 小時內'],
+   ['≤ 6 或 ≤ 12 小時','不常規；GBS ≥ 12 也沒有好處'],
+   ['復甦後仍不穩定','緊急內視鏡或介入放射'],
+   ['靜脈曲張','復甦後 12 小時內']]},
+  {t:'止血方式',s:'',l:[
+   ['ACG 首選','雙極電燒、heater probe、無水酒精'],
+   ['ACG 亦可','止血夾、APC、soft monopolar'],
+   ['Epinephrine','不可單獨使用'],
+   ['ESGE 2026','Ia、Ib 可用 OTS clip 作第一線單一療法'],
+   ['止血粉','ACG 可用於活動出血；ESGE 2026 不作第一線單一療法']]},
+  {t:'止血後 PPI',s:'3 天 + 到滿 2 週',l:[
+   ['前 3 天','80 mg bolus + 8 mg/h，或 40 mg 每日 2–4 次'],
+   ['之後','每日兩次，到內視鏡後滿 2 週'],
+   ['低風險病灶','標準 PPI'],
+   ['P-CAB','ESGE 2026 未達共識'],
+   ['其他','止血穩固者 24 小時內進食；缺鐵或貧血者出院前補鐵（ESGE 2026）']]},
+  {t:'再出血與救援',s:'內視鏡 → TAE → 手術',l:[
+   ['第一步','重做內視鏡，可考慮 OTS clip'],
+   ['再失敗','經導管動脈栓塞 TAE'],
+   ['手術','TAE 不可得或失敗'],
+   ['預防性 TAE','後壁十二指腸、> 2 cm、到院不穩可考慮（ESGE 2026）']]},
+  {t:'抗血栓藥',s:'ACG–CAG 2022',l:[
+   ['Warfarin','不給 FFP、維生素 K；需要時 PCC'],
+   ['DOAC','不給 PCC、idarucizumab、andexanet'],
+   ['抗血小板藥','不輸血小板'],
+   ['次級預防 aspirin','不停；中斷者止血當天恢復'],
+   ['抗凝血劑','依血栓風險儘快恢復（ESGE 2026）']]},
+  {t:'靜脈曲張路徑',s:'Baveno VII',l:[
+   ['藥物','血管活性藥 2–5 天，入院起給抗生素'],
+   ['止血','食道用套紮；胃曲張用組織黏著劑'],
+   ['PPI','內視鏡後停用，除非有明確適應症'],
+   ['Pre-emptive TIPS','C < 14，或 B > 7 且活動出血或 HVPG > 20；72 小時內'],
+   ['無法控制','氣球或金屬支架過渡，救援 TIPS'],
+   ['影像','腹部影像排除血栓與肝癌']]}
+ ]
+};
+/*MAP-END*/
+
+var UGIB_SOURCES = [
+ ['Laine L, et al. ACG Clinical Guideline: Upper GI and Ulcer Bleeding. Am J Gastroenterol 2021;116:899–917.','原文'],
+ ['Gralnek IM, et al. ESGE Guideline: Peptic ulcer bleeding, Update 2026. Endoscopy 2026;58:899–924.','摘要'],
+ ['Gralnek IM, et al. ESGE Guideline: NVUGIH, Update 2021. Endoscopy 2021;53:300–32.','摘要'],
+ ['Abraham NS, et al. ACG–CAG Guideline: Anticoagulants and Antiplatelets During Acute GI Bleeding. Am J Gastroenterol 2022;117:542–58.','摘要'],
+ ['de Franchis R, et al. Baveno VII. J Hepatol 2022;76:959–74.','原文'],
+ ['Stanley AJ, et al. Comparison of risk scoring systems. BMJ 2017;356:i6432.','原文'],
+ ['Villanueva C, et al. Transfusion strategies. N Engl J Med 2013;368:11–21.','摘要'],
+ ['Lau JYW, et al. Timing of endoscopy. N Engl J Med 2020;382:1299–308.','摘要'],
+ ['HALT-IT Trial Collaborators. Lancet 2020;395:1927–36.','摘要'],
+ ['Sung JJ, et al. Continuation of low-dose aspirin. Ann Intern Med 2010;152:1–9.','摘要'],
+ ['García-Pagán JC, et al. Early use of TIPS. N Engl J Med 2010;362:2370–9.','摘要'],
+ ['Saltzman JR, et al. AIMS65. Gastrointest Endosc 2011;74:1215–24.','摘要']
+];
 
 (function () {
   'use strict';
@@ -508,6 +836,7 @@ footer{text-align:center;font-size:.78rem;color:var(--slate-500);margin-top:12px
   document.querySelector('main').addEventListener('input', render);
   document.querySelector('main').addEventListener('change', render);
   $('reset').addEventListener('click', function () { fill({}); state.forrest = ''; renderForrest(); render(); });
+  window.UGIB_UI = { load: function (p, forrest) { fill(p); state.forrest = forrest; renderForrest(); render(); } };
   $('demo').addEventListener('click', function () {
     fill({ age: 72, sex: 'M', sbp: 96, hr: 108, hb: 9.2, bun: 42, melena: true, ihd: true, cvd: true, bunUnit: 'mgdl' });
     render();
@@ -522,6 +851,166 @@ footer{text-align:center;font-size:.78rem;color:var(--slate-500);margin-top:12px
   render();
 
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(function () {});
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  var E = window.UGIB, TABS = ['tool', 'cases', 'quiz', 'map'];
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var BAND = { low: '極低風險', mid: '需住院評估', high: '高風險' };
+
+  function show(t, focus) {
+    if (TABS.indexOf(t) < 0) t = 'tool';
+    TABS.forEach(function (x) {
+      $('view-' + x).hidden = x !== t;
+      var b = $('tab-' + x);
+      b.setAttribute('aria-selected', String(x === t));
+      b.tabIndex = x === t ? 0 : -1;
+    });
+    document.body.dataset.view = t;
+    if (focus) $('tab-' + t).focus();
+    if (t === 'map') drawMap();
+  }
+  function go(t) {
+    if (location.hash !== '#' + t) history.pushState(null, '', '#' + t);
+    show(t);
+    window.scrollTo(0, 0);
+  }
+  $('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[role=tab]');
+    if (b) go(b.id.slice(4));
+  });
+  $('tabs').addEventListener('keydown', function (e) {
+    var i = TABS.indexOf(document.body.dataset.view), d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    var t = TABS[(i + d + TABS.length) % TABS.length];
+    history.pushState(null, '', '#' + t);
+    show(t, true);
+  });
+  window.addEventListener('hashchange', function () { show(location.hash.slice(1)); });
+  window.addEventListener('popstate', function () { show(location.hash.slice(1)); });
+
+  function sources() {
+    return '<section class="card"><h2>教學內容依據</h2><div class="body"><ul class="src plain">' +
+      UGIB_SOURCES.map(function (s) { return '<li>' + esc(s[0]) + ' <span class="tag r">' + esc(s[1]) + '</span></li>'; }).join('') +
+      '</ul><p class="src">標「摘要」者只讀過摘要；ESGE 2026 全文需訂閱，條號與內容取自其摘要，建議強度未列出。</p></div></section>';
+  }
+
+  /* ---------- cases ---------- */
+  var cur = 0;
+  function dataRows(p) {
+    var flags = [['melena', '黑便'], ['syncope', '暈厥'], ['hepatic', '肝病'], ['hf', '心衰竭'], ['ihd', 'IHD'], ['major', '其他重大共病'], ['severe', '腎/肝衰竭或轉移癌'], ['cvd', '已知心血管疾病'], ['cirrhosis', '疑靜脈曲張']]
+      .filter(function (f) { return p[f[0]]; }).map(function (f) { return f[1]; });
+    return [['年齡 / 性別', p.age + ' 歲 ' + (p.sex === 'M' ? '男' : '女')], ['到院 SBP / 心跳', p.sbp + ' mmHg / ' + p.hr + ' bpm'], ['到院 Hb / BUN', p.hb + ' g/dL / ' + p.bun + ' mg/dL'], ['勾選', flags.length ? flags.join('、') : '無']];
+  }
+  function renderCase() {
+    var c = UGIB_CASES[cur], r = E.assess(c.input);
+    [].forEach.call($('casePick').children, function (b, i) { b.setAttribute('aria-pressed', String(i === cur)); });
+    $('caseOut').innerHTML =
+      '<section class="card"><h2>病例 ' + (cur + 1) + '：' + esc(c.t) + ' <small>' + esc(c.tag) + '</small></h2><div class="body">' +
+      '<p class="stem">' + esc(c.stem) + '</p>' +
+      '<table class="kv">' + dataRows(c.input).map(function (x) { return '<tr><th>' + esc(x[0]) + '</th><td>' + esc(x[1]) + '</td></tr>'; }).join('') +
+      (c.forrest ? '<tr><th>Forrest</th><td>' + esc(c.forrest) + '</td></tr>' : '') + '</table>' +
+      '<div class="chips">' +
+      '<div class="chip ' + r.gbs.band + '"><span>GBS</span><b>' + r.gbs.score + '</b><i>' + BAND[r.gbs.band] + '</i></div>' +
+      '<div class="chip"><span>Rockall</span><b>' + r.rockall.score + '</b><i>原始世代死亡 ' + r.rockall.mortality + '%</i></div>' +
+      '<div class="chip' + (r.transfusion.below ? ' high' : '') + '"><span>輸血閾值</span><b>' + r.transfusion.threshold + '</b><i>' + (r.transfusion.below ? '已低於閾值' : '未達閾值') + '</i></div></div>' +
+      '<button class="btn" type="button" id="caseLoad">帶入計算工具</button>' +
+      '<h3 class="qh">想一想，再展開</h3>' +
+      c.q.map(function (s) { return '<details class="step"><summary>' + esc(s.a) + '</summary><p>' + esc(s.x) + '</p></details>'; }).join('') +
+      '<div class="alert warn pit"><b>容易踩的點</b>' + esc(c.pit) + '</div>' +
+      '<p class="src">依據：' + esc(c.src) + '</p></div></section>';
+    $('caseLoad').addEventListener('click', function () { window.UGIB_UI.load(c.input, c.forrest || ''); go('tool'); });
+  }
+
+  /* ---------- quiz ---------- */
+  var answers = {}, level = 'all';
+  function renderQuiz() {
+    var shown = UGIB_QUIZ.map(function (q, i) { return { q: q, i: i }; }).filter(function (x) { return level === 'all' || x.q.l === level; });
+    var done = shown.filter(function (x) { return answers[x.i] !== undefined; });
+    var right = done.filter(function (x) { return answers[x.i] === x.q.a; }).length;
+    $('quizScore').textContent = '已答 ' + done.length + ' / ' + shown.length + '，答對 ' + right + ' 題';
+    [].forEach.call($('quizLevel').children, function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === level)); });
+    $('quizList').innerHTML = shown.map(function (x) {
+      var q = x.q, picked = answers[x.i], ans = picked !== undefined;
+      return '<section class="card qz"><div class="body"><p class="qt"><span class="tag ' + (q.l === 'adv' ? 'g' : 'r') + '">' + (q.l === 'adv' ? '高階' : '基礎') + '</span> ' + (x.i + 1) + '. ' + esc(q.q) + '</p><div class="opts">' +
+        q.o.map(function (o, j) {
+          var cls = !ans ? '' : j === q.a ? ' ok' : j === picked ? ' no' : '';
+          return '<button type="button" class="opt' + cls + '" data-q="' + x.i + '" data-o="' + j + '"' + (ans ? ' disabled' : '') + '><b>' + 'ABCD'[j] + '</b> ' + esc(o) + '</button>';
+        }).join('') + '</div>' +
+        (ans ? '<div class="alert ' + (picked === q.a ? 'info' : 'danger') + ' expl" role="status"><b>' + (picked === q.a ? '答對了' : '正確答案是 ' + 'ABCD'[q.a]) + '</b>' + esc(q.x) + '<div class="src">依據：' + esc(q.s) + '</div></div>' : '') +
+        '</div></section>';
+    }).join('');
+  }
+  $('quizList').addEventListener('click', function (e) {
+    var b = e.target.closest('.opt');
+    if (!b || b.disabled) return;
+    var qi = +b.dataset.q, y = window.scrollY;
+    answers[qi] = +b.dataset.o;
+    renderQuiz();
+    window.scrollTo(0, y);
+    var first = document.querySelector('.opt[data-q="' + qi + '"]');
+    if (first) { first.closest('.qz').querySelector('.expl').setAttribute('tabindex', '-1'); first.closest('.qz').querySelector('.expl').focus({ preventScroll: true }); }
+  });
+  $('quizLevel').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (b) { level = b.dataset.v; renderQuiz(); }
+  });
+  $('quizReset').addEventListener('click', function () { answers = {}; renderQuiz(); });
+
+  /* ---------- mind map ---------- */
+  function branch(b, side, i) {
+    var id = 'mm-' + side + i;
+    return '<div class="mm-branch ' + side + '"><button type="button" class="mm-head" aria-expanded="false" aria-controls="' + id + '"><span class="mm-t">' + esc(b.t) + '</span>' + (b.s ? '<span class="mm-s">' + esc(b.s) + '</span>' : '') + '</button>' +
+      '<ul class="mm-leaves" id="' + id + '" hidden>' + b.l.map(function (x) { return '<li><b>' + esc(x[0]) + '</b>' + esc(x[1]) + '</li>'; }).join('') + '</ul></div>';
+  }
+  function drawMap() {
+    var svg = $('mm-links'), box = $('mm');
+    if (!svg || !box.offsetParent || getComputedStyle(svg).display === 'none') return;
+    var o = box.getBoundingClientRect(), c = $('mm-center').getBoundingClientRect(), cy = c.top + c.height / 2 - o.top, h = '';
+    svg.setAttribute('viewBox', '0 0 ' + o.width + ' ' + o.height);
+    ['dx', 'tx'].forEach(function (side) {
+      [].forEach.call(box.querySelectorAll('.mm-branch.' + side + ' .mm-head'), function (el) {
+        var r = el.getBoundingClientRect(), y = r.top + r.height / 2 - o.top;
+        var x1 = (side === 'dx' ? r.right : r.left) - o.left, x2 = (side === 'dx' ? c.left : c.right) - o.left, m = (x1 + x2) / 2;
+        h += '<path class="' + side + '" d="M' + x1 + ' ' + y + ' C' + m + ' ' + y + ' ' + m + ' ' + cy + ' ' + x2 + ' ' + cy + '"/>';
+      });
+    });
+    svg.innerHTML = h;
+  }
+  function setAll(open) {
+    [].forEach.call($('mm').querySelectorAll('.mm-head'), function (b) { b.setAttribute('aria-expanded', String(open)); $(b.getAttribute('aria-controls')).hidden = !open; });
+    drawMap();
+  }
+
+  $('casePick').innerHTML = UGIB_CASES.map(function (c, i) { return '<button type="button" data-i="' + i + '" aria-pressed="false"><b>' + (i + 1) + '</b> ' + esc(c.tag) + '</button>'; }).join('');
+  $('casePick').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (b) { cur = +b.dataset.i; renderCase(); }
+  });
+  $('mm-dx').innerHTML = '<h3 class="mm-col dx">評估與分流</h3>' + UGIB_MAP.dx.map(function (b, i) { return branch(b, 'dx', i); }).join('');
+  $('mm-tx').innerHTML = '<h3 class="mm-col tx">治療與處置</h3>' + UGIB_MAP.tx.map(function (b, i) { return branch(b, 'tx', i); }).join('');
+  $('mm').addEventListener('click', function (e) {
+    var b = e.target.closest('.mm-head');
+    if (!b) return;
+    var open = b.getAttribute('aria-expanded') !== 'true';
+    b.setAttribute('aria-expanded', String(open));
+    $(b.getAttribute('aria-controls')).hidden = !open;
+    drawMap();
+  });
+  $('mm-open').addEventListener('click', function () { setAll(true); });
+  $('mm-close').addEventListener('click', function () { setAll(false); });
+  window.addEventListener('resize', drawMap);
+  $('caseSrc').innerHTML = sources();
+  $('quizSrc').innerHTML = sources();
+  $('mapSrc').innerHTML = sources();
+
+  renderCase();
+  renderQuiz();
+  show(location.hash.slice(1));
 })();
 </script>
 </body>

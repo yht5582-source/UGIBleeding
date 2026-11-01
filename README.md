@@ -19,12 +19,15 @@
 - **疑靜脈曲張出血**：提示改依 Baveno VII 處置（ACG 2021 不涵蓋）。
 - 空白或不合理數值**不計分**，顯示「尚缺」項目；輸入內容存於本機 localStorage。
 - PWA：manifest + service worker，可加入主畫面並離線使用。
+- **示範病例**（`#cases`）：6 例，分數由引擎即時計算，可帶入計算工具。
+- **考題**（`#quiz`）：基礎 10 題＋高階 10 題，立即解析，不儲存作答。
+- **心智圖**（`#map`）：評估與分流／治療與處置，含 ESGE 2026、ACG–CAG 2022、Baveno VII。
 
 ## 檔案
 
 | 檔案 | 用途 |
 |---|---|
-| `index.html` | 頁面；計算引擎在 `/*ENGINE-START*/ … /*ENGINE-END*/` |
+| `index.html` | 頁面；計算引擎在 `/*ENGINE-START*/ … /*ENGINE-END*/`，教學內容在 `/*CASES-*/`、`/*QUIZ-*/`、`/*MAP-*/` |
 | `tests.cjs` | 引擎測試：`node tests.cjs` |
 | `manifest.json`、`icon.svg`、`sw.js` | PWA |
 
