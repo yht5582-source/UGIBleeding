@@ -90,6 +90,7 @@ tr.cur td{background:var(--amber-50);font-weight:700}
 .alert.info{background:var(--sky-50);border-color:#bae6fd;color:#0c4a6e}
 .alert.danger{background:var(--rose-50);border-color:var(--rose-300);color:var(--rose-800)}
 .alert b{display:block;margin-bottom:2px}
+.alert li b{display:inline;margin:0}
 ul.plain{margin:6px 0 0;padding-left:18px}
 ul.plain li{margin:3px 0}
 .forrest{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
@@ -166,7 +167,7 @@ details.step p{margin:0;padding:10px 12px;font-size:.9rem;color:var(--slate-700)
 <div class="wrap">
   <header>
     <h1>急性上消化道出血 (UGIB) 風險分級</h1>
-    <p>Glasgow-Blatchford Score (GBS) ＋ Pre-endoscopic Rockall Score · 處置對應 ACG 2021 指引</p>
+    <p>Glasgow-Blatchford Score (GBS) ＋ Pre-endoscopic Rockall Score · 處置對應 ACG 2021 指引，並標示 ESGE 2026 差異</p>
   </header>
 
   <nav class="tabs" id="tabs" role="tablist" aria-label="功能分頁">
@@ -260,12 +261,12 @@ details.step p{margin:0;padding:10px 12px;font-size:.9rem;color:var(--slate-700)
       </section>
 
       <section class="card">
-        <h2>4. 內視鏡前處置 <small>ACG 2021</small></h2>
+        <h2>4. 內視鏡前處置 <small>ACG 2021；標示 ESGE 2026 差異</small></h2>
         <div class="body" id="preEndo"></div>
       </section>
 
       <section class="card">
-        <h2>5. 內視鏡後：潰瘍出血 (Forrest 分類) <small>ACG 2021</small></h2>
+        <h2>5. 內視鏡後：潰瘍出血 (Forrest 分類) <small>ACG 2021；標示 ESGE 2026 差異</small></h2>
         <div class="body">
           <div class="forrest" id="forrest">
             <button type="button" data-v="Ia" aria-pressed="false">Ia 噴射性出血</button>
@@ -284,6 +285,7 @@ details.step p{margin:0;padding:10px 12px;font-size:.9rem;color:var(--slate-700)
         <div class="body">
           <ul class="src plain">
             <li>Laine L, et al. ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding. <i>Am J Gastroenterol</i> 2021;116:899–917. doi:10.14309/ajg.0000000000001245</li>
+            <li>Gralnek IM, et al. Endoscopic diagnosis and management of peptic ulcer bleeding: ESGE Guideline – Update 2026. <i>Endoscopy</i> 2026;58:899–924.（僅讀摘要，全文需訂閱）</li>
             <li>Blatchford O, et al. A risk score to predict need for treatment for upper-gastrointestinal haemorrhage. <i>Lancet</i> 2000;356:1318–21.</li>
             <li>Rockall TA, et al. Risk assessment after acute upper gastrointestinal haemorrhage. <i>Gut</i> 1996;38:316–21.</li>
             <li>de Franchis R, et al. Baveno VII – Renewing consensus in portal hypertension. <i>J Hepatol</i> 2022;76:959–74.</li>
@@ -362,7 +364,7 @@ details.step p{margin:0;padding:10px 12px;font-size:.9rem;color:var(--slate-700)
   </div>
 
   <div id="mbar" role="button" tabindex="0" aria-label="跳至結果">GBS <b id="mbGbs">–</b> · Rockall <b id="mbRk">–</b> <span id="mbLvl"></span></div>
-  <footer>臨床決策輔助工具，不取代臨床判斷。所有運算在瀏覽器本機完成，不上傳任何資料。 · v2.1</footer>
+  <footer>臨床決策輔助工具，不取代臨床判斷。所有運算在瀏覽器本機完成，不上傳任何資料。 · v2.2</footer>
 </div>
 
 <script>
@@ -778,7 +780,7 @@ var UGIB_SOURCES = [
     $('preEndo').innerHTML =
       '<ul class="plain note">' +
       '<li><b>Erythromycin</b>（建議 #3，conditional）：250 mg IV，輸注 5–30 分鐘，於內視鏡前 20–90 分鐘給予；可減少重複內視鏡及住院天數。QT 延長、電解質異常、併用延長 QT 藥物者審慎。</li>' +
-      '<li><b>內視鏡前 PPI</b>（#4）：指引無法做出支持或反對的建議；可降低內視鏡下高風險病灶比例，但未證實改善再出血或死亡。</li>' +
+      '<li><b>內視鏡前 PPI</b>（#4）：ACG 2021 無法做出支持或反對的建議；可降低內視鏡下高風險病灶比例，但未證實改善再出血或死亡。<br><span class="tag m" style="margin-left:0">ESGE 2026 差異</span> 建議可考慮內視鏡前高劑量靜脈 PPI，但不可因此延誤早期內視鏡（#3）。</li>' +
       '<li><b>內視鏡時機</b>（#5）：住院/留觀者 24 小時內。先完成復甦與共病處理。</li>' +
       '<li><b>輸血</b>（#2）：限制性策略，Hb 7 g/dL（心血管疾病 8 g/dL）。</li>' +
       '</ul>';
@@ -792,16 +794,18 @@ var UGIB_SOURCES = [
         '<li>Epinephrine 注射<b>不可單獨使用</b>，須合併另一種止血方式（#10，strong）。</li>' +
         '<li>止血後：高劑量 PPI 3 天（#13，strong）— 連續：80 mg bolus + 8 mg/h；或間歇：40 mg 每日 2–4 次（可口服，可先給 80 mg bolus）。</li>' +
         '<li>之後口服 PPI 每日兩次，至內視鏡後滿 2 週（#14）。</li></ul></div>',
-    tc325: '<div class="alert warn"><b>活動性出血可加用 TC-325 止血粉（#11，conditional）</b></div>',
-    clot: '<div class="alert warn"><b>附著血塊 (IIb)：指引無法建議是否做內視鏡治療（#7）</b>可沖洗嘗試移除血塊後依底下病灶處理；若給予內視鏡治療，術後依高風險病灶給予高劑量 PPI。</div>',
+    otsActive: '<div class="alert info"><b>ESGE 2026 差異：OTS clip 可作第一線</b>Ia、Ib 可用 over-the-scope clip 單一療法，作為合併療法之外的第一線選擇（#7）。ACG 2021 僅建議用於先前成功止血後的再出血（#12）。</div>',
+    otsVessel: '<div class="alert info"><b>ESGE 2026 差異：OTS clip 可單獨使用</b>IIa 可用 over-the-scope clip 作為另一種單一療法（#9）。ACG 2021 僅建議用於先前成功止血後的再出血（#12）。</div>',
+    tc325: '<div class="alert warn"><b>ACG 2021：活動性出血可用 TC-325 止血粉（#11，conditional）</b>ESGE 2026 差異：止血粉不建議作第一線單一療法（#11），留給常規止血無效的持續出血考慮使用（#12）。</div>',
+    clot: '<div class="alert warn"><b>附著血塊 (IIb)：ACG 2021 無法建議是否做內視鏡治療（#7）</b>可沖洗嘗試移除血塊後依底下病灶處理；若給予內視鏡治療，術後依高風險病灶給予高劑量 PPI。<br>ESGE 2026 差異：建議做內視鏡治療，移除血塊後視需要止血；前提是內視鏡醫師能安全移除血塊，並處理轉成更高風險病灶的情況（#5）。</div>',
     lo: '<div class="alert info"><b>低風險病灶：不需內視鏡止血</b>給予標準 PPI（如每日一次口服）；ACG 2021 未評估此族群之 PPI 方案。符合條件可早期進食、考慮提早出院。</div>',
     rebleed: '<div class="note"><b>再出血</b>：建議重做內視鏡並內視鏡治療，而非直接手術或栓塞（#15）；先前成功止血後再出血者，可考慮 over-the-scope clip（#12）。<br><b>內視鏡治療失敗</b>：建議經導管動脈栓塞 TAE（#16），其次手術。</div>'
   };
   function renderForrest() {
     var f = state.forrest, h = '';
     if (!f) h = '<div class="note">選擇內視鏡所見，顯示對應的止血與 PPI 建議。</div>';
-    else if (f === 'Ia' || f === 'Ib') h = FORREST.hi + FORREST.tc325 + FORREST.rebleed;
-    else if (f === 'IIa') h = FORREST.hi + FORREST.rebleed;
+    else if (f === 'Ia' || f === 'Ib') h = FORREST.hi + FORREST.otsActive + FORREST.tc325 + FORREST.rebleed;
+    else if (f === 'IIa') h = FORREST.hi + FORREST.otsVessel + FORREST.rebleed;
     else if (f === 'IIb') h = FORREST.clot + FORREST.rebleed;
     else h = FORREST.lo;
     $('forrestOut').innerHTML = h;

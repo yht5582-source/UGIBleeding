@@ -16,6 +16,7 @@
 - **輸血閾值**：Hb 7 g/dL；已知心血管疾病 8 g/dL；ACS 可考慮更高（ACG #2）。
 - **內視鏡前處置**：erythromycin 250 mg IV（#3）、PPI（#4 無建議）、時機（#5）。
 - **Forrest 分類 → 止血與 PPI 方案**（#6–#16）：高劑量 PPI 3 天，之後 BID 至 2 週；再出血、TAE。
+- **ESGE 2026 差異**：內視鏡前 PPI、Forrest IIb、OTS clip 第一線、止血粉，與 ACG 建議並列標示（僅依摘要）。
 - **疑靜脈曲張出血**：提示改依 Baveno VII 處置（ACG 2021 不涵蓋）。
 - 空白或不合理數值**不計分**，顯示「尚缺」項目；輸入內容存於本機 localStorage。
 - PWA：manifest + service worker，可加入主畫面並離線使用。
